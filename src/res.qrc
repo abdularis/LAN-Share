@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/send.png</file>
+        <file>img/settings.png</file>
+        <file>img/about.png</file>
+        <file>img/icon.png</file>
+        <file>img/down.png</file>
+        <file>img/up.png</file>
+        <file>img/clear.png</file>
+        <file>img/refresh.png</file>
+        <file>img/cancel.png</file>
+        <file>img/pause.png</file>
+        <file>img/resume.png</file>
+        <file>text/credits.html</file>
+        <file>text/gpl-3.0.txt</file>
+    </qresource>
+</RCC>
