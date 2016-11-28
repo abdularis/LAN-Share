@@ -79,7 +79,7 @@ private Q_SLOTS:
     void onSelectedReceiverStateChanged(TransferState state);
 
 private:
-    void setupMenuBar();
+    void setupToolbar();
     void connectSignals();
 
     void sendFile(const QString& fileName, const Device& receiver);

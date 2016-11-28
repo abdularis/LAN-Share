@@ -29,9 +29,9 @@ AboutDialog::AboutDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QString version = "v " + QString::number(ProgramMajorVersion) + "." +
-                             QString::number(ProgramMinorVersion) + "." +
-                             QString::number(ProgramPatchVersion) +
+    QString version = "v " + QString::number(ProgramXVersion) + "." +
+                             QString::number(ProgramYVersion) + "." +
+                             QString::number(ProgramZVersion) +
                       " (" + QString(OS_NAME) + ")";
     ui->programNameLbl->setText(ProgramName);
     ui->programVersionLbl->setText(version);

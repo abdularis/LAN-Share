@@ -82,8 +82,16 @@ protected:
     void clearReadBuffer();
     void setSocket(QTcpSocket* socket);
     void setProgress(int progress);
-    virtual void writePacket(qint32 packetDataSize, PacketType type, const QByteArray& data);
+
     virtual void processPacket(QByteArray& data, PacketType type);
+    virtual void processHeaderPacket(QByteArray& data);
+    virtual void processDataPacket(QByteArray& data);
+    virtual void processFinishPacket(QByteArray& data);
+    virtual void processCancelPacket(QByteArray& data);
+    virtual void processPausePacket(QByteArray& data);
+    virtual void processResumePacket(QByteArray& data);
+
+    virtual void writePacket(qint32 packetDataSize, PacketType type, const QByteArray& data);
 
     QFile* mFile;
     QTcpSocket* mSocket;

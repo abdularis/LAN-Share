@@ -34,8 +34,9 @@ Sender::Sender(Device receiver, const QString& fileName, QObject* parent)
     mFileBuff.resize(mFileBuffSize);
 
     mCancelled = false;
-    mPausedByReceiver = false;
     mPaused = false;
+    mPausedByReceiver = false;
+    mIsHeaderSent = false;
 }
 
 bool Sender::start()
@@ -110,6 +111,15 @@ void Sender::onBytesWritten(qint64 bytes)
     }
 }
 
+void Sender::finish()
+{
+    mFile->close();
+    setState(TransferState::Finish);
+    emit done();
+
+    writePacket(0, PacketType::Finish, QByteArray());
+}
+
 void Sender::sendData()
 {
     if (!mBytesRemaining || mCancelled || mPausedByReceiver || mPaused)
@@ -139,15 +149,6 @@ void Sender::sendData()
     }
 }
 
-void Sender::finish()
-{
-    mFile->close();
-    setState(TransferState::Finish);
-    emit done();
-
-    writePacket(0, PacketType::Finish, QByteArray());
-}
-
 void Sender::sendHeader()
 {
     QString fName = QDir(mFile->fileName()).dirName();
@@ -160,28 +161,34 @@ void Sender::sendHeader()
     QByteArray headerData( QJsonDocument(obj).toJson() );
 
     writePacket(headerData.size(), PacketType::Header, headerData);
+    mIsHeaderSent = true;
 }
 
-void Sender::processPacket(QByteArray &data, PacketType type)
+void Sender::processCancelPacket(QByteArray& data)
 {
     Q_UNUSED(data);
 
-    switch (type) {
-    case PacketType::Cancel : {
-        setState(TransferState::Cancelled);
-        setProgress(0);
-        mSocket->disconnectFromHost();
-        mCancelled = true;
-        break;
-    }
-    case PacketType::Pause : {
-        mPausedByReceiver = true;
-        break;
-    }
-    case PacketType::Resume : {
-        mPausedByReceiver = false;
-        sendData();
-        break;
-    }
-    }
+    setState(TransferState::Cancelled);
+    setProgress(0);
+    mSocket->disconnectFromHost();
+    mCancelled = true;
 }
+
+void Sender::processPausePacket(QByteArray& data)
+{
+    Q_UNUSED(data);
+
+    mPausedByReceiver = true;
+}
+
+void Sender::processResumePacket(QByteArray& data)
+{
+    Q_UNUSED(data);
+    
+    mPausedByReceiver = false;
+    if (mIsHeaderSent)
+        sendData();
+    else
+        sendHeader();
+}
+

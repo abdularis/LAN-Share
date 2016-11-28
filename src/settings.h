@@ -37,9 +37,9 @@
 
 #define ProgramName         "Locally"
 #define ProgramDescription  "a simple program that let you transfer files over local area network (LAN) easily."
-#define ProgramMajorVersion 0
-#define ProgramMinorVersion 1
-#define ProgramPatchVersion 0
+#define ProgramXVersion     0
+#define ProgramYVersion     1
+#define ProgramZVersion     1
 #define SettingsFileName    "locally-conf"
 
 class Settings

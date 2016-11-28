@@ -163,8 +163,46 @@ void Transfer::writePacket(qint32 packetDataSize, PacketType type, const QByteAr
 
 void Transfer::processPacket(QByteArray &data, PacketType type)
 {
-    Q_UNUSED(data); Q_UNUSED(type);
+    switch (type) {
+    case PacketType::Header : processHeaderPacket(data); break;
+    case PacketType::Data : processDataPacket(data); break;
+    case PacketType::Finish : processFinishPacket(data); break;
+    case PacketType::Cancel : processCancelPacket(data); break;
+    case PacketType::Pause : processPausePacket(data); break;
+    case PacketType::Resume : processResumePacket(data); break;
+    }
 }
+
+void Transfer::processHeaderPacket(QByteArray& data)
+{
+    Q_UNUSED(data);
+}
+
+void Transfer::processDataPacket(QByteArray& data)
+{
+    Q_UNUSED(data);
+}
+
+void Transfer::processFinishPacket(QByteArray& data)
+{
+    Q_UNUSED(data);
+}
+
+void Transfer::processCancelPacket(QByteArray& data)
+{
+    Q_UNUSED(data);
+}
+
+void Transfer::processPausePacket(QByteArray& data)
+{
+    Q_UNUSED(data);
+}
+
+void Transfer::processResumePacket(QByteArray& data)
+{
+    Q_UNUSED(data);
+}
+
 
 void Transfer::clearReadBuffer()
 {

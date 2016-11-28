@@ -45,17 +45,7 @@ void DeviceBroadcaster::sendBroadcast()
                                                     {"port", port}
                                                 }));
 
-    QVector<QHostAddress> addresses;
-    foreach (QNetworkInterface iface, QNetworkInterface::allInterfaces()) {
-        if (iface.flags() & QNetworkInterface::CanBroadcast) {
-            foreach (QNetworkAddressEntry addressEntry, iface.addressEntries()) {
-                if (!addressEntry.broadcast().isNull()) {
-                    addresses.push_back(addressEntry.broadcast());
-                }
-            }
-        }
-    }
-
+    QVector<QHostAddress> addresses = getBroadcastAddressFromInterfaces();
     QByteArray data(QJsonDocument(obj).toJson(QJsonDocument::Compact));
     foreach (QHostAddress address, addresses) {
         mUdpSock.writeDatagram(data, address, port);
@@ -76,9 +66,26 @@ void DeviceBroadcaster::processBroadcast()
             if (obj.value("port").toVariant().value<quint16>() ==
                     Settings::instance()->getBroadcastPort()) {
 
-                emit broadcastReceived(obj.value("id").toString(), obj.value("name").toString(),
-                                       obj.value("os").toString(), sender);
+                Device device;
+                device.set(obj.value("id").toString(), obj.value("name").toString(),
+                           obj.value("os").toString(), sender);
+                emit broadcastReceived(device);
             }
         }
     }
+}
+
+QVector<QHostAddress> DeviceBroadcaster::getBroadcastAddressFromInterfaces()
+{
+    QVector<QHostAddress> addresses;
+    foreach (QNetworkInterface iface, QNetworkInterface::allInterfaces()) {
+        if (iface.flags() & QNetworkInterface::CanBroadcast) {
+            foreach (QNetworkAddressEntry addressEntry, iface.addressEntries()) {
+                if (!addressEntry.broadcast().isNull()) {
+                    addresses.push_back(addressEntry.broadcast());
+                }
+            }
+        }
+    }
+    return addresses;
 }

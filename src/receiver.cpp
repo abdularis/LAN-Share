@@ -62,56 +62,50 @@ void Receiver::onDisconnected()
     emit errorOcurred("Sender disconnected");
 }
 
-void Receiver::processPacket(QByteArray &data, PacketType type)
+void Receiver::processHeaderPacket(QByteArray& data)
 {
-    switch (type) {
-    case PacketType::Header : {
-        QJsonObject obj = QJsonDocument::fromJson(data).object();
-        mFileSize = obj.value("size").toVariant().value<qint64>();
+    QJsonObject obj = QJsonDocument::fromJson(data).object();
+    mFileSize = obj.value("size").toVariant().value<qint64>();
 
-        QString fileName = Settings::instance()->getDownloadDir() +
-                QDir::separator() + obj.value("name").toString();
-        mFile = new QFile(fileName, this);
-        if (mFile->open(QIODevice::WriteOnly)) {
-            setState(TransferState::Transfering);
-            emit fileOpened();
-        }
-        else {
-            emit errorOcurred("Failed to create " + fileName);
-        }
-        break;
+    QString fileName = Settings::instance()->getDownloadDir() +
+            QDir::separator() + obj.value("name").toString();
+    mFile = new QFile(fileName, this);
+    if (mFile->open(QIODevice::WriteOnly)) {
+        setState(TransferState::Transfering);
+        emit fileOpened();
     }
-    case PacketType::Data : {
-        if (mFile && mBytesRead + data.size() <= mFileSize) {
-            mFile->write(data);
-            mBytesRead += data.size();
+    else {
+        emit errorOcurred("Failed to create " + fileName);
+    }
+}
 
-            setProgress( mBytesRead * 100 / mFileSize );
-        }
-        break;
-    }
-    case PacketType::Finish : {
-        mFile->close();
-        setState(TransferState::Finish);
-        emit done();
-        mSocket->disconnectFromHost();
-        break;
-    }
-    case PacketType::Cancel : {
-        setState(TransferState::Cancelled);
-        setProgress(0);
-        clearReadBuffer();
-        mFile->remove();
-        mSocket->disconnectFromHost();
-        break;
-    }
-    case PacketType::Pause : {
+void Receiver::processDataPacket(QByteArray& data)
+{
+    if (mFile && mBytesRead + data.size() <= mFileSize) {
+        mFile->write(data);
+        mBytesRead += data.size();
 
-        break;
+        setProgress( (int)(mBytesRead * 100 / mFileSize) );
     }
-    case PacketType::Resume : {
+}
 
-        break;
-    }
-    }
+void Receiver::processFinishPacket(QByteArray& data)
+{
+    Q_UNUSED(data);
+
+    setState(TransferState::Finish);
+    mFile->close();
+    mSocket->disconnectFromHost();
+    emit done();
+}
+
+void Receiver::processCancelPacket(QByteArray& data)
+{
+    Q_UNUSED(data);
+
+    setState(TransferState::Cancelled);
+    setProgress(0);
+    clearReadBuffer();
+    mFile->remove();
+    mSocket->disconnectFromHost();
 }

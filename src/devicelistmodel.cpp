@@ -29,9 +29,9 @@ DeviceListModel::DeviceListModel(DeviceBroadcaster* deviceBC, QObject* parent)
     connect(mDBC, &DeviceBroadcaster::broadcastReceived, this, &DeviceListModel::onBCReceived);
 }
 
-void DeviceListModel::onBCReceived(const QString& id, const QString& name,
-                                   const QString& osName, const QHostAddress& fromAddress)
+void DeviceListModel::onBCReceived(const Device& fromDevice)
 {
+    QString id = fromDevice.getId();
     if (id == Settings::instance()->getMyDevice().getId())
         return;
 
@@ -44,11 +44,8 @@ void DeviceListModel::onBCReceived(const QString& id, const QString& name,
     }
 
     if (!found) {
-        Device dev;
-        dev.set(id, name, osName, fromAddress);
-
         beginInsertRows(QModelIndex(), mDevices.size(), mDevices.size());
-        mDevices.push_back(dev);
+        mDevices.push_back(fromDevice);
         endInsertRows();
     }
 }

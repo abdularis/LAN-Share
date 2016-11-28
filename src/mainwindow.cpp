@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setupMenuBar();
+    setupToolbar();
     setWindowTitle(ProgramName);
 
     mBroadcaster = new DeviceBroadcaster(this);
@@ -432,7 +432,7 @@ void MainWindow::onSelectedReceiverStateChanged(TransferState state)
                                     state == TransferState::Paused);
 }
 
-void MainWindow::setupMenuBar()
+void MainWindow::setupToolbar()
 {
     QWidget* spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);

@@ -45,7 +45,9 @@ private:
     void sendData();
     void sendHeader();
 
-    void processPacket(QByteArray& data, PacketType type) override;
+    void processCancelPacket(QByteArray& data) override;
+    void processPausePacket(QByteArray& data) override;
+    void processResumePacket(QByteArray& data) override;
 
     Device mReceiverDev;
     QString mFilePath;
@@ -58,6 +60,7 @@ private:
     bool mCancelled;
     bool mPaused;
     bool mPausedByReceiver;
+    bool mIsHeaderSent;
 };
 
 #endif // SENDER_H

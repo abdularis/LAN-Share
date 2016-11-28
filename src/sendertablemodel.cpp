@@ -57,7 +57,7 @@ QVariant SenderTableModel::data(const QModelIndex &index, int role) const
                     TransferState state = sender->getState();
                     switch (state) {
                     case TransferState::Idle : return tr("Idle");
-                    case TransferState::Waiting : return tr("Connecting");
+                    case TransferState::Waiting : return tr("Waiting");
                     case TransferState::Disconnected : return tr("Disconnected");
                     case TransferState::Paused : return tr("Paused");
                     case TransferState::Cancelled : return tr("Cancelled");

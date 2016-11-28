@@ -23,6 +23,8 @@
 #include <QTimer>
 #include <QtNetwork>
 
+#include "device.h"
+
 class DeviceBroadcaster : public QObject
 {
     Q_OBJECT
@@ -31,8 +33,7 @@ public:
     explicit DeviceBroadcaster(QObject *parent = 0);
 
 Q_SIGNALS:
-    void broadcastReceived(const QString& id, const QString& name,
-                           const QString& osName, const QHostAddress& fromAddress);
+    void broadcastReceived(const Device& fromDevice);
 
 public Q_SLOTS:
     void start();
@@ -42,6 +43,8 @@ private Q_SLOTS:
     void processBroadcast();
 
 private:
+    QVector<QHostAddress> getBroadcastAddressFromInterfaces();
+
     QTimer mTimer;
     QUdpSocket mUdpSock;
 };

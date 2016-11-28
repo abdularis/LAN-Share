@@ -42,8 +42,7 @@ public:
     void setDevices(const QVector<Device> &getDevices);
 
 private Q_SLOTS:
-    void onBCReceived(const QString& id, const QString& name,
-                      const QString& osName, const QHostAddress& fromAddress);
+    void onBCReceived(const Device& fromDevice);
 
 private:
     DeviceBroadcaster* mDBC;

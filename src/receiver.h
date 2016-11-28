@@ -39,7 +39,10 @@ private Q_SLOTS:
     void onDisconnected();
 
 private:
-    void processPacket(QByteArray& data, PacketType type) override;
+    void processHeaderPacket(QByteArray& data) override;
+    void processDataPacket(QByteArray& data) override;
+    void processFinishPacket(QByteArray& data) override;
+    void processCancelPacket(QByteArray& data) override;
 
     Device mSenderDev;
 
