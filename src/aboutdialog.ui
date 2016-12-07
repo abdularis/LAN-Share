@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>350</width>
-    <height>280</height>
+    <width>480</width>
+    <height>332</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,14 +18,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>350</width>
-    <height>280</height>
+    <width>480</width>
+    <height>332</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>350</width>
-    <height>280</height>
+    <width>450</width>
+    <height>332</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -35,16 +35,7 @@
    <iconset resource="res.qrc">
     <normaloff>:/img/about.png</normaloff>:/img/about.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>9</number>
-   </property>
-   <property name="topMargin">
-    <number>5</number>
-   </property>
-   <property name="bottomMargin">
-    <number>9</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QLabel" name="label_3">
      <property name="minimumSize">
@@ -90,64 +81,92 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="programVersionLbl">
+    <widget class="QWidget" name="textContent" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>9</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="programVersionLbl">
+        <property name="styleSheet">
+         <string notr="true">color: rgb(31, 31, 31);</string>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="programDescLbl">
+        <property name="styleSheet">
+         <string notr="true">color: rgb(31, 31, 31);</string>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt; color:#2b2b2b;&quot;&gt;Copyright (c) 2016, Abdul Aris R.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="textEdit">
      <property name="styleSheet">
-      <string notr="true">color: rgb(31, 31, 31);</string>
+      <string notr="true">font: 8pt &quot;Sans&quot;;</string>
      </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
+     <property name="readOnly">
       <bool>true</bool>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="programDescLbl">
-     <property name="styleSheet">
-      <string notr="true">color: rgb(31, 31, 31);</string>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt; color:#2b2b2b;&quot;&gt;Copyright (c) 2016, Abdul Aris R.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+     <property name="textInteractionFlags">
+      <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
      </property>
     </widget>
    </item>
@@ -157,9 +176,12 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="creditBtn">
        <property name="text">
         <string>Credits</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -167,9 +189,12 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="licenseBtn">
        <property name="text">
         <string>License</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -217,46 +242,14 @@
  </resources>
  <connections>
   <connection>
-   <sender>pushButton_2</sender>
-   <signal>clicked()</signal>
-   <receiver>AboutDialog</receiver>
-   <slot>onCreditsClicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>89</x>
-     <y>269</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>35</x>
-     <y>251</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton</sender>
-   <signal>clicked()</signal>
-   <receiver>AboutDialog</receiver>
-   <slot>onLicenseClicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>175</x>
-     <y>269</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>284</x>
-     <y>246</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>pushButton_3</sender>
    <signal>clicked()</signal>
    <receiver>AboutDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>318</x>
-     <y>259</y>
+     <x>389</x>
+     <y>309</y>
     </hint>
     <hint type="destinationlabel">
      <x>236</x>
@@ -264,9 +257,41 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>creditBtn</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>AboutDialog</receiver>
+   <slot>onCreditsClicked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>18</x>
+     <y>300</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>licenseBtn</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>AboutDialog</receiver>
+   <slot>onLicenseClicked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>140</x>
+     <y>300</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>208</x>
+     <y>290</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>onCreditsClicked()</slot>
-  <slot>onLicenseClicked()</slot>
+  <slot>onCreditsClicked(bool)</slot>
+  <slot>onLicenseClicked(bool)</slot>
  </slots>
 </ui>

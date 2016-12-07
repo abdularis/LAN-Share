@@ -29,6 +29,24 @@ Receiver::Receiver(Device sender, QTcpSocket* socket, QObject* parent)
     connect(mSocket, &QTcpSocket::disconnected, this, &Receiver::onDisconnected);
 }
 
+Receiver::~Receiver()
+{
+    TransferState state = getState();
+    if (state == TransferState::Paused ||
+            state == TransferState::Transfering ||
+            state == TransferState::Waiting) {
+
+        if (mFile->isOpen()) {
+            mFile->remove();
+            delete mFile;
+        }
+        if (mSocket->isOpen()) {
+            mSocket->close();
+            delete mSocket;
+        }
+    }
+}
+
 void Receiver::resume()
 {
     if (canResume()) {

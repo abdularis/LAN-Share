@@ -25,7 +25,8 @@
 
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::AboutDialog)
+    ui(new Ui::AboutDialog),
+    mCredits(""), mLicense("")
 {
     ui->setupUi(this);
 
@@ -36,6 +37,8 @@ AboutDialog::AboutDialog(QWidget *parent) :
     ui->programNameLbl->setText(ProgramName);
     ui->programVersionLbl->setText(version);
     ui->programDescLbl->setText(ProgramDescription);
+
+    ui->textEdit->setVisible(false);
 }
 
 AboutDialog::~AboutDialog()
@@ -43,26 +46,34 @@ AboutDialog::~AboutDialog()
     delete ui;
 }
 
-void AboutDialog::onCreditsClicked()
+void AboutDialog::onCreditsClicked(bool checked)
 {
-    QFile file(":/text/credits.html");
-    file.open(QIODevice::ReadOnly);
+    if (checked) {
+        if (mCredits.isEmpty()) {
+            QFile file(":/text/credits.html");
+            file.open(QIODevice::ReadOnly);
+            mCredits = file.readAll();
+        }
+        ui->textEdit->setText(mCredits);
+    }
 
-    TextViewDialog dialog(QString(file.readAll()));
-    dialog.setWindowTitle(tr("Credits"));
-    dialog.setMinimumSize(320, 230);
-    dialog.setMaximumSize(320, 230);
-    dialog.exec();
+    ui->textContent->setVisible(!checked);
+    ui->textEdit->setVisible(checked);
+    ui->licenseBtn->setChecked(false);
 }
 
-void AboutDialog::onLicenseClicked()
+void AboutDialog::onLicenseClicked(bool checked)
 {
-    QFile file(":/text/gpl-3.0.txt");
-    file.open(QIODevice::ReadOnly);
+    if (checked) {
+        if (mLicense.isEmpty()) {
+            QFile file(":/text/gpl-3.0.txt");
+            file.open(QIODevice::ReadOnly);
+            mLicense = file.readAll();
+        }
+        ui->textEdit->setText(mLicense);
+    }
 
-    TextViewDialog dialog(QString(file.readAll()), this);
-    dialog.setWindowTitle(tr("License"));
-    dialog.setMinimumSize(500, 300);
-    dialog.setMaximumSize(500, 300);
-    dialog.exec();
+    ui->textContent->setVisible(!checked);
+    ui->textEdit->setVisible(checked);
+    ui->creditBtn->setChecked(false);
 }

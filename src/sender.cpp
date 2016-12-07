@@ -39,6 +39,14 @@ Sender::Sender(Device receiver, const QString& fileName, QObject* parent)
     mIsHeaderSent = false;
 }
 
+Sender::~Sender()
+{
+    if (mFile && mFile->isOpen()) {
+        mFile->close();
+        delete mFile;
+    }
+}
+
 bool Sender::start()
 {
     mFile = new QFile(mFilePath);

@@ -23,6 +23,11 @@ Device::Device()
 {
 }
 
+bool Device::isValid() const
+{
+    return mId != "" && mName != "" && mOSName != "" && mAddress != QHostAddress::Null;
+}
+
 void Device::set(const QString& id, const QString& name, const QString& osName, const QHostAddress& addr)
 {
     mId = id;

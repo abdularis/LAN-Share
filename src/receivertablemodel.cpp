@@ -27,6 +27,13 @@ ReceiverTableModel::ReceiverTableModel(QObject* parent)
 {
 }
 
+ReceiverTableModel::~ReceiverTableModel()
+{
+    for (Receiver* rec : mReceivers) {
+        delete rec;
+    }
+}
+
 int ReceiverTableModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);

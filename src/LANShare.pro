@@ -8,9 +8,11 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Locally
+TARGET = LANShare
 TEMPLATE = app
 CONFIG += c++11
+
+RC_ICONS += img/icon.ico
 
 SOURCES += main.cpp\
         mainwindow.cpp \

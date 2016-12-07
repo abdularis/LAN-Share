@@ -39,6 +39,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void closeEvent(QCloseEvent* event);
+
 private Q_SLOTS:
     void onSendActionTriggered();
     void onSettingsActionTriggered();
@@ -81,8 +84,10 @@ private Q_SLOTS:
 private:
     void setupToolbar();
     void connectSignals();
-
     void sendFile(const QString& fileName, const Device& receiver);
+
+    bool anyActiveSender();
+    bool anyActiveReceiver();
 
     Ui::MainWindow *ui;
 

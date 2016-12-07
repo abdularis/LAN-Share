@@ -26,6 +26,7 @@ class Sender : public Transfer
 {
 public:
     Sender(Device receiver, const QString& fileName, QObject* parent = 0);
+    ~Sender();
 
     bool start();
 

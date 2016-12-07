@@ -31,6 +31,7 @@ public:
     inline QString getName() const { return mName; }
     inline QHostAddress getAddress() const { return mAddress; }
     inline QString getOSName() const { return mOSName; }
+    bool isValid() const;
 
     void set(const QString& id, const QString& name, const QString& osName, const QHostAddress& addr);
     void setId(const QString& id);

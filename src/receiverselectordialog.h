@@ -37,6 +37,7 @@ public:
     ~ReceiverSelectorDialog();
 
     Device getSelectedDevice() const;
+    QVector<Device> getSelectedDevices() const;
 
 private Q_SLOTS:
     void onSendClicked();

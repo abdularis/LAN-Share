@@ -27,6 +27,7 @@ class ReceiverTableModel : public QAbstractTableModel
 {
 public:
     ReceiverTableModel(QObject* parent = 0);
+    ~ReceiverTableModel();
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;

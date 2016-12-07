@@ -34,13 +34,15 @@ public:
     ~AboutDialog();
 
 private Q_SLOTS:
-    void onCreditsClicked();
-    void onLicenseClicked();
+    void onCreditsClicked(bool checked);
+    void onLicenseClicked(bool checked);
 
 private:
-    void openDialogWithFile(const QString& fName);
 
     Ui::AboutDialog *ui;
+
+    QString mCredits;
+    QString mLicense;
 };
 
 #endif // ABOUTDIALOG_H

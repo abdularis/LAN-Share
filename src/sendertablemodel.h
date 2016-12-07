@@ -27,6 +27,7 @@ class SenderTableModel : public QAbstractTableModel
 {
 public:
     SenderTableModel(QObject* parent = 0);
+    ~SenderTableModel();
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;

@@ -28,6 +28,13 @@ SenderTableModel::SenderTableModel(QObject* parent)
 
 }
 
+SenderTableModel::~SenderTableModel()
+{
+    for (Sender* sender : mSenders) {
+        delete sender;
+    }
+}
+
 int SenderTableModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);

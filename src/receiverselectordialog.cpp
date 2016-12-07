@@ -52,13 +52,31 @@ Device ReceiverSelectorDialog::getSelectedDevice() const
     return Device();
 }
 
+QVector<Device> ReceiverSelectorDialog::getSelectedDevices() const
+{
+    QVector<Device> devices;
+    QItemSelectionModel* selModel = ui->listView->selectionModel();
+    if (selModel) {
+
+        QModelIndexList selected = selModel->selectedIndexes();
+        for (int i = 0; i < selected.size(); i++) {
+            if (selected.at(i).isValid()) {
+                devices.push_back(mModel->device( selected.at(i).row() ));
+            }
+        }
+
+    }
+
+    return devices;
+}
+
 void ReceiverSelectorDialog::onSendClicked()
 {
     QModelIndex currIndex = ui->listView->currentIndex();
     if (currIndex.isValid())
         accept();
     else
-        QMessageBox::information(this, tr("Info"), tr("Please select the receiver!"));
+        QMessageBox::information(this, tr("Info"), tr("Please select receivers."));
 }
 
 void ReceiverSelectorDialog::onRefreshClicked()

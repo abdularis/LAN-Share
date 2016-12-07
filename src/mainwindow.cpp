@@ -22,6 +22,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolButton>
+#include <QCloseEvent>
 #include <QtDebug>
 
 #include "mainwindow.h"
@@ -65,6 +66,52 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    bool needToConfirm = false;
+    int count = mSenderModel->rowCount();
+
+    auto check = [](Transfer* t) -> bool {
+        if (!t)
+            return false;
+        TransferState state = t->getState();
+        return state == TransferState::Paused ||
+                state == TransferState::Transfering ||
+                state == TransferState::Waiting;
+    };
+
+    for (int i = 0; i < count; i++) {
+        Sender* sender = mSenderModel->getSender(i);
+        if (check(sender)) {
+            needToConfirm = true;
+            break;
+        }
+    }
+
+    if (!needToConfirm) {
+        count = mReceiverModel->rowCount();
+        for (int i = 0; i < count; i++) {
+            Receiver* rec = mReceiverModel->getReceiver(i);
+            if (check(rec)) {
+                needToConfirm = true;
+                break;
+            }
+        }
+    }
+
+    if (needToConfirm) {
+        QMessageBox::StandardButton ret =
+                QMessageBox::question(this, tr("Confirm close"),
+                                      tr("You are about to close & abort all transfers. Do you want to continue?"));
+        if (ret == QMessageBox::Yes) {
+            event->accept();
+        }
+        else {
+            event->ignore();
+        }
+    }
+}
+
 void MainWindow::connectSignals()
 {
     connect(mTransServer, &TransferServer::newReceiverAdded, this, &MainWindow::onNewReceiverAdded);
@@ -86,7 +133,7 @@ void MainWindow::sendFile(const QString &fileName, const Device &receiver)
     QModelIndex progressIdx = mSenderModel->index(mSenderModel->rowCount() - 1, (int)SenderTableModel::Column::Progress);
 
     /*
-     * add progress bar pada item transfer
+     * tambah progress bar pada item transfer
      */
     QProgressBar* progress = new QProgressBar();
     connect(sender, &Sender::progressChanged, progress, &QProgressBar::setValue);
@@ -102,21 +149,23 @@ void MainWindow::onSendActionTriggered()
         return;
 
     ReceiverSelectorDialog dialog(mDeviceModel);
-
     if (dialog.exec() == QDialog::Accepted) {
-        Device receiver = dialog.getSelectedDevice();
-        if (receiver != Device()) {
+//        Device receiver = dialog.getSelectedDevice();
+        QVector<Device> receivers = dialog.getSelectedDevices();
+        for (Device receiver : receivers) {
+            if (receiver.isValid()) {
 
-            /*
-             * send broadcast ke penerima, jadi device ini(sender) akan selalu
-             * ada di list model penerima.
-             */
-            mBroadcaster->sendBroadcast();
-            foreach (QString fName, fileNames) {
-                if (!fName.isEmpty())
-                    sendFile(fName, receiver);
+                /*
+                 * send broadcast ke penerima, jadi device ini(sender) akan selalu
+                 * ada di list model penerima.
+                 */
+                mBroadcaster->sendBroadcast();
+                foreach (QString fName, fileNames) {
+                    if (!fName.isEmpty())
+                        sendFile(fName, receiver);
+                }
+
             }
-
         }
     }
 }
@@ -216,8 +265,11 @@ void MainWindow::onSenderResumeClicked()
 
 void MainWindow::onReceiverTableDoubleClicked(const QModelIndex& index)
 {
-    Q_UNUSED(index);
-    openReceiverFileInCurrentIndex();
+    if (index.isValid()) {
+        Receiver* rec = mReceiverModel->getReceiver(index.row());
+        if (rec && rec->getState() == TransferState::Finish)
+            openReceiverFileInCurrentIndex();
+    }
 }
 
 void MainWindow::onReceiverClearClicked()
