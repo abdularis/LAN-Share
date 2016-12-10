@@ -1,5 +1,5 @@
 /*
-    Locally - LAN file transfer.
+    LANShare - LAN file transfer.
     Copyright (C) 2016 Abdul Aris R. <abdularisrahmanudin10@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
