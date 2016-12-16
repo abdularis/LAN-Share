@@ -89,7 +89,7 @@
       <string>You can select multiple receivers</string>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::MultiSelection</enum>
+      <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
     </widget>
    </item>

@@ -24,8 +24,8 @@
 #include "settings.h"
 #include "sender.h"
 
-Sender::Sender(Device receiver, const QString& fileName, QObject* parent)
-    : Transfer(NULL, NULL, parent), mReceiverDev(receiver), mFilePath(fileName)
+Sender::Sender(Device receiver, const QString& folderName, const QString& filePath, QObject* parent)
+    : Transfer(NULL, parent), mReceiverDev(receiver), mFilePath(filePath), mFolderName(folderName)
 {
     mFileSize = -1;
     mBytesRemaining = -1;
@@ -37,31 +37,32 @@ Sender::Sender(Device receiver, const QString& fileName, QObject* parent)
     mPaused = false;
     mPausedByReceiver = false;
     mIsHeaderSent = false;
+
+    mInfo->setTransferType(TransferType::Upload);
+    mInfo->setPeer(receiver);
 }
 
 Sender::~Sender()
 {
-    if (mFile && mFile->isOpen()) {
-        mFile->close();
-        delete mFile;
-    }
 }
 
 bool Sender::start()
 {
-    mFile = new QFile(mFilePath);
+    mInfo->setFilePath(mFilePath);
+    mFile = new QFile(mFilePath, this);
     bool ok = mFile->open(QIODevice::ReadOnly);
     if (ok) {
         mFileSize = mFile->size();
+        mInfo->setDataSize(mFileSize);
         mBytesRemaining = mFileSize;
-        emit fileOpened();
+        emit mInfo->fileOpened();
     }
 
     if (mFileSize > 0) {
         QHostAddress receiverAddress = mReceiverDev.getAddress();
         setSocket(new QTcpSocket(this));
         mSocket->connectToHost(receiverAddress, Settings::instance()->getTransferPort(), QAbstractSocket::ReadWrite);
-        setState(TransferState::Waiting);
+        mInfo->setState(TransferState::Waiting);
 
         connect(mSocket, &QTcpSocket::bytesWritten, this, &Sender::onBytesWritten);
         connect(mSocket, &QTcpSocket::connected, this, &Sender::onConnected);
@@ -73,8 +74,8 @@ bool Sender::start()
 
 void Sender::resume()
 {
-    if (canResume()) {
-        setState(getLastState());
+    if (mInfo->canResume()) {
+        mInfo->setState(mInfo->getLastState());
         mPaused = false;
         sendData();
     }
@@ -82,32 +83,32 @@ void Sender::resume()
 
 void Sender::pause()
 {
-    if (canPause()) {
-        setState(TransferState::Paused);
+    if (mInfo->canPause()) {
+        mInfo->setState(TransferState::Paused);
         mPaused = true;
     }
 }
 
 void Sender::cancel()
 {
-    if (canCancel()) {
+    if (mInfo->canCancel()) {
         writePacket(0, PacketType::Cancel, QByteArray());
-        setState(TransferState::Cancelled);
-        setProgress(0);
+        mInfo->setState(TransferState::Cancelled);
+        mInfo->setProgress(0);
         mCancelled = true;
     }
 }
 
 void Sender::onConnected()
 {
-    setState(TransferState::Transfering);
+    mInfo->setState(TransferState::Transfering);
     sendHeader();
 }
 
 void Sender::onDisconnected()
 {
-    setState(TransferState::Disconnected);
-    emit errorOcurred("Receiver disconnected");
+    mInfo->setState(TransferState::Disconnected);
+    emit mInfo->errorOcurred(tr("Receiver disconnected"));
 }
 
 void Sender::onBytesWritten(qint64 bytes)
@@ -122,8 +123,8 @@ void Sender::onBytesWritten(qint64 bytes)
 void Sender::finish()
 {
     mFile->close();
-    setState(TransferState::Finish);
-    emit done();
+    mInfo->setState(TransferState::Finish);
+    emit mInfo->done();
 
     writePacket(0, PacketType::Finish, QByteArray());
 }
@@ -140,7 +141,7 @@ void Sender::sendData()
 
     qint64 bytesRead = mFile->read(mFileBuff.data(), mFileBuffSize);
     if (bytesRead == -1) {
-        emit errorOcurred(tr("Error while reading file."));
+        emit mInfo->errorOcurred(tr("Error while reading file."));
         return;
     }
 
@@ -148,7 +149,7 @@ void Sender::sendData()
     if (mBytesRemaining < 0)
         mBytesRemaining = 0;
 
-    setProgress( (int) ((mFileSize-mBytesRemaining) * 100 / mFileSize) );
+    mInfo->setProgress( (int) ((mFileSize-mBytesRemaining) * 100 / mFileSize) );
 
     writePacket(mFileBuffSize, PacketType::Data, mFileBuff);
 
@@ -163,6 +164,7 @@ void Sender::sendHeader()
 
     QJsonObject obj( QJsonObject::fromVariantMap({
                                     {"name", fName},
+                                    {"folder", mFolderName },
                                     {"size", mFileSize}
                                 }));
 
@@ -176,8 +178,8 @@ void Sender::processCancelPacket(QByteArray& data)
 {
     Q_UNUSED(data);
 
-    setState(TransferState::Cancelled);
-    setProgress(0);
+    mInfo->setState(TransferState::Cancelled);
+    mInfo->setProgress(0);
     mSocket->disconnectFromHost();
     mCancelled = true;
 }

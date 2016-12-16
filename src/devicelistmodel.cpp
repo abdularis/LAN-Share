@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QPixmap>
+
 #include "devicelistmodel.h"
 #include "settings.h"
 
@@ -67,14 +69,25 @@ QVariant DeviceListModel::data(const QModelIndex &index, int role) const
 {
     if (index.isValid()) {
         Device dev = mDevices[index.row()];
-        if (role == Qt::DisplayRole) {
+        switch (role) {
+        case Qt::DisplayRole : {
             return dev.getName() + "  (" + dev.getOSName() + ")";
         }
-        else if (role == Qt::ToolTipRole) {
+        case Qt::ToolTipRole : {
             QString str = dev.getId() + "<br>" +
                           dev.getName() + " (" + dev.getOSName() + ")<br>" +
                           dev.getAddress().toString();
             return str;
+        }
+        case Qt::DecorationRole : {
+            QString os = dev.getOSName();
+            if (os == "Linux")
+                return QPixmap(":/img/linux.png");
+            else if (os == "Windows")
+                return QPixmap(":/img/windows.png");
+            else if (os == "Mac OSX")
+                return QPixmap(":/img/osx.png");
+        }
         }
 
     }

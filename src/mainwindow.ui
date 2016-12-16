@@ -399,72 +399,13 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionSend"/>
-   <addaction name="separator"/>
-   <addaction name="actionSettings"/>
   </widget>
-  <action name="actionSend">
-   <property name="icon">
-    <iconset resource="res.qrc">
-     <normaloff>:/img/send.png</normaloff>:/img/send.png</iconset>
-   </property>
-   <property name="text">
-    <string>Send</string>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select and send files&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="actionSettings">
-   <property name="icon">
-    <iconset resource="res.qrc">
-     <normaloff>:/img/settings.png</normaloff>:/img/settings.png</iconset>
-   </property>
-   <property name="text">
-    <string>Settings</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="res.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>actionSend</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>onSendActionTriggered()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>303</x>
-     <y>190</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionSettings</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>onSettingsActionTriggered()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>340</x>
-     <y>227</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>senderTableView</sender>
    <signal>doubleClicked(QModelIndex)</signal>
@@ -674,5 +615,6 @@
   <slot>onReceiverResumeClicked()</slot>
   <slot>onSenderTableContextMenuRequested(QPoint)</slot>
   <slot>onReceiverTableContextMenuRequested(QPoint)</slot>
+  <slot>onSendFolderActionTriggered()</slot>
  </slots>
 </ui>

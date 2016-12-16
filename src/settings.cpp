@@ -21,6 +21,7 @@
 #include <QUuid>
 #include <QSettings>
 #include <QDir>
+#include <QStandardPaths>
 
 #include "settings.h"
 
@@ -120,7 +121,13 @@ void Settings::reset()
     mTransferPort = DefaultTransferPort;
     mBCInterval = DefaultBroadcastInterval;
     mFileBuffSize = DefaultFileBufferSize;
-    mDownloadDir = QDir::homePath() + QDir::separator() + "LocallyDownloads";
+#if defined (Q_OS_WIN)
+    mDownloadDir =
+            QStandardPaths::locate(QStandardPaths::DownloadLocation, QString(), QStandardPaths::LocateDirectory) + "LANShareDownloads";
+#else
+    mDownloadDir = QDir::homePath() + QDir::separator() + "LANShareDownloads";
+#endif
+
 }
 
 quint16 Settings::getBroadcastPort() const

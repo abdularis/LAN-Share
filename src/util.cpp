@@ -16,13 +16,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QFileInfo>
+
 #include "util.h"
 
 Util::Util()
 {
 }
 
-QString Util::fileSizeToString(qint64 size)
+QString Util::sizeToString(qint64 size)
 {
     int count = 0;
     double f_size = size;
@@ -41,4 +43,30 @@ QString Util::fileSizeToString(qint64 size)
     }
 
     return QString::number(f_size, 'f', 2).append(suffix);
+}
+
+QVector< QPair<QString, QString> >
+    Util::getRelativeDirNameAndFullFilePath(const QDir& startingDir, const QString& innerDirName)
+{
+    QVector< QPair<QString, QString> > pairs;
+
+    QFileInfoList fiList = startingDir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files);
+    for (auto fi : fiList)
+        pairs.push_back( QPair<QString, QString>(innerDirName, fi.filePath()) );
+
+    fiList = startingDir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs);
+    for (auto fi : fiList) {
+        QString newInnerDirName;
+        if (innerDirName.isEmpty())
+            newInnerDirName = fi.fileName();
+        else
+            newInnerDirName = innerDirName + QDir::separator() + fi.fileName();
+
+        QVector< QPair<QString, QString> > otherPairs =
+                getRelativeDirNameAndFullFilePath( QDir(fi.filePath()), newInnerDirName );
+
+        pairs.append(otherPairs);
+    }
+
+    return pairs;
 }

@@ -32,6 +32,9 @@
 #include "settingsdialog.h"
 #include "settings.h"
 #include "aboutdialog.h"
+#include "util.h"
+#include "sender.h"
+#include "receiver.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -43,20 +46,23 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mBroadcaster = new DeviceBroadcaster(this);
     mBroadcaster->start();
-    mSenderModel = new SenderTableModel(this);
-    mReceiverModel = new ReceiverTableModel(this);
+    mSenderModel = new TransferTableModel(this);
+    mReceiverModel = new TransferTableModel(this);
     mDeviceModel = new DeviceListModel(mBroadcaster, this);
     mTransServer = new TransferServer(mDeviceModel, this);
     mTransServer->listen();
 
+//    mSenderModel->setHeaderData((int) TransferTableModel::Column::Peer, Qt::Horizontal, tr("Receiver"));
+//    mReceiverModel->setHeaderData((int) TransferTableModel::Column::Peer, Qt::Horizontal, tr("Sender"));
+
     ui->senderTableView->setModel(mSenderModel);
     ui->receiverTableView->setModel(mReceiverModel);
 
-    ui->senderTableView->setColumnWidth((int)SenderTableModel::Column::FileName, 340);
-    ui->senderTableView->setColumnWidth((int)SenderTableModel::Column::Progress, 160);
+    ui->senderTableView->setColumnWidth((int)TransferTableModel::Column::FileName, 340);
+    ui->senderTableView->setColumnWidth((int)TransferTableModel::Column::Progress, 160);
 
-    ui->receiverTableView->setColumnWidth((int)ReceiverTableModel::Column::FileName, 340);
-    ui->receiverTableView->setColumnWidth((int)ReceiverTableModel::Column::Progress, 160);
+    ui->receiverTableView->setColumnWidth((int)TransferTableModel::Column::FileName, 340);
+    ui->receiverTableView->setColumnWidth((int)TransferTableModel::Column::Progress, 160);
 
     connectSignals();
 }
@@ -66,38 +72,36 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/*
+ * Sebelum ditutup, check apakah masih terdapat proses trasfer
+ * yg berlangsung, (Sending atau Receiving)
+ */
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    bool needToConfirm = false;
-    int count = mSenderModel->rowCount();
-
-    auto check = [](Transfer* t) -> bool {
+    auto checkTransferState = [](Transfer* t) {
         if (!t)
             return false;
-        TransferState state = t->getState();
+        TransferState state = t->getTransferInfo()->getState();
         return state == TransferState::Paused ||
                 state == TransferState::Transfering ||
                 state == TransferState::Waiting;
     };
 
-    for (int i = 0; i < count; i++) {
-        Sender* sender = mSenderModel->getSender(i);
-        if (check(sender)) {
-            needToConfirm = true;
-            break;
-        }
-    }
-
-    if (!needToConfirm) {
-        count = mReceiverModel->rowCount();
+    auto checkTransferModel = [&](TransferTableModel* model) {
+        int count = model->rowCount();
         for (int i = 0; i < count; i++) {
-            Receiver* rec = mReceiverModel->getReceiver(i);
-            if (check(rec)) {
-                needToConfirm = true;
-                break;
+            Transfer* t = model->getTransfer(i);
+            if (checkTransferState(t)) {
+                return true;
             }
         }
-    }
+
+        return false;
+    };
+
+    bool needToConfirm = checkTransferModel(mSenderModel);
+    if (!needToConfirm)
+        needToConfirm = checkTransferModel(mReceiverModel);
 
     if (needToConfirm) {
         QMessageBox::StandardButton ret =
@@ -125,21 +129,39 @@ void MainWindow::connectSignals()
             this, &MainWindow::onReceiverTableSelectionChanged);
 }
 
-void MainWindow::sendFile(const QString &fileName, const Device &receiver)
+void MainWindow::sendFile(const QString& folderName, const QString &fileName, const Device &receiver)
 {
-    Sender* sender = new Sender(receiver, fileName, this);
+    Sender* sender = new Sender(receiver, folderName, fileName, this);
     sender->start();
-    mSenderModel->insertSender(sender);
-    QModelIndex progressIdx = mSenderModel->index(mSenderModel->rowCount() - 1, (int)SenderTableModel::Column::Progress);
+    mSenderModel->insertTransfer(sender);
+    QModelIndex progressIdx = mSenderModel->index(0, (int)TransferTableModel::Column::Progress);
 
     /*
      * tambah progress bar pada item transfer
      */
     QProgressBar* progress = new QProgressBar();
-    connect(sender, &Sender::progressChanged, progress, &QProgressBar::setValue);
+    connect(sender->getTransferInfo(), &TransferInfo::progressChanged, progress, &QProgressBar::setValue);
 
     ui->senderTableView->setIndexWidget(progressIdx, progress);
-    ui->senderTableView->scrollToBottom();
+    ui->senderTableView->scrollToTop();
+}
+
+void MainWindow::selectReceiversAndSendTheFiles(QVector<QPair<QString, QString> > dirNameAndFullPath)
+{
+    ReceiverSelectorDialog dialog(mDeviceModel);
+    if (dialog.exec() == QDialog::Accepted) {
+        QVector<Device> receivers = dialog.getSelectedDevices();
+        for (Device receiver : receivers) {
+            if (receiver.isValid()) {
+
+                mBroadcaster->sendBroadcast();
+                for (auto p : dirNameAndFullPath) {
+                    sendFile(p.first, p.second, receiver);
+                }
+
+            }
+        }
+    }
 }
 
 void MainWindow::onSendActionTriggered()
@@ -148,26 +170,24 @@ void MainWindow::onSendActionTriggered()
     if (fileNames.size() <= 0)
         return;
 
-    ReceiverSelectorDialog dialog(mDeviceModel);
-    if (dialog.exec() == QDialog::Accepted) {
-//        Device receiver = dialog.getSelectedDevice();
-        QVector<Device> receivers = dialog.getSelectedDevices();
-        for (Device receiver : receivers) {
-            if (receiver.isValid()) {
+    QVector<QPair<QString, QString> > pairs;
+    for (auto fName : fileNames)
+        pairs.push_back( QPair<QString, QString>("", fName) );
 
-                /*
-                 * send broadcast ke penerima, jadi device ini(sender) akan selalu
-                 * ada di list model penerima.
-                 */
-                mBroadcaster->sendBroadcast();
-                foreach (QString fName, fileNames) {
-                    if (!fName.isEmpty())
-                        sendFile(fName, receiver);
-                }
+    selectReceiversAndSendTheFiles(pairs);
+}
 
-            }
-        }
-    }
+void MainWindow::onSendFolderActionTriggered()
+{
+    QString dirName = QFileDialog::getExistingDirectory(this, tr("Select Folder"), QDir::homePath(),
+                                                    QFileDialog::ShowDirsOnly);
+    if (dirName.isEmpty())
+        return;
+
+    QDir dir(dirName);
+    QVector< QPair<QString, QString> > pairs = Util::getRelativeDirNameAndFullFilePath(dir, dir.dirName());
+
+    selectReceiversAndSendTheFiles(pairs);
 }
 
 void MainWindow::onSettingsActionTriggered()
@@ -185,12 +205,12 @@ void MainWindow::onAboutActionTriggered()
 void MainWindow::onNewReceiverAdded(Receiver *rec)
 {
     QProgressBar* progress = new QProgressBar();
-    connect(rec, &Receiver::progressChanged, progress, &QProgressBar::setValue);
-    mReceiverModel->insertReceiver(rec);
-    QModelIndex progressIdx = mReceiverModel->index(mReceiverModel->rowCount() - 1, (int)ReceiverTableModel::Column::Progress);
+    connect(rec->getTransferInfo(), &TransferInfo::progressChanged, progress, &QProgressBar::setValue);
+    mReceiverModel->insertTransfer(rec);
+    QModelIndex progressIdx = mReceiverModel->index(0, (int)TransferTableModel::Column::Progress);
 
     ui->receiverTableView->setIndexWidget(progressIdx, progress);
-    ui->receiverTableView->scrollToBottom();
+    ui->receiverTableView->scrollToTop();
 }
 
 void MainWindow::onSenderTableSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
@@ -199,14 +219,12 @@ void MainWindow::onSenderTableSelectionChanged(const QItemSelection &selected, c
 
         QModelIndex first = selected.indexes().first();
         if (first.isValid()) {
-            Sender* sender = mSenderModel->getSender(first.row());
-            if (sender) {
-                ui->resumeSenderBtn->setEnabled(sender->canResume());
-                ui->pauseSenderBtn->setEnabled(sender->canPause());
-                ui->cancelSenderBtn->setEnabled(sender->canCancel());
+            TransferInfo* ti = mSenderModel->getTransferInfo(first.row());
+            ui->resumeSenderBtn->setEnabled(ti->canResume());
+            ui->pauseSenderBtn->setEnabled(ti->canPause());
+            ui->cancelSenderBtn->setEnabled(ti->canCancel());
 
-                connect(sender, &Sender::stateChanged, this, &MainWindow::onSelectedSenderStateChanged);
-            }
+            connect(ti, &TransferInfo::stateChanged, this, &MainWindow::onSelectedSenderStateChanged);
         }
 
     }
@@ -215,10 +233,8 @@ void MainWindow::onSenderTableSelectionChanged(const QItemSelection &selected, c
 
         QModelIndex first = deselected.indexes().first();
         if (first.isValid()) {
-            Sender* sender = mSenderModel->getSender(first.row());
-            if (sender) {
-                disconnect(sender, &Sender::stateChanged, this, &MainWindow::onSelectedSenderStateChanged);
-            }
+            TransferInfo* ti = mSenderModel->getTransferInfo(first.row());
+            disconnect(ti, &TransferInfo::stateChanged, this, &MainWindow::onSelectedSenderStateChanged);
         }
 
     }
@@ -239,7 +255,7 @@ void MainWindow::onSenderCancelClicked()
 {
     QModelIndex currIndex = ui->senderTableView->currentIndex();
     if (currIndex.isValid()) {
-        Sender* sender = mSenderModel->getSender(currIndex.row());
+        Transfer* sender = mSenderModel->getTransfer(currIndex.row());
         sender->cancel();
     }
 }
@@ -248,7 +264,7 @@ void MainWindow::onSenderPauseClicked()
 {
     QModelIndex currIndex = ui->senderTableView->currentIndex();
     if (currIndex.isValid()) {
-        Sender* sender = mSenderModel->getSender(currIndex.row());
+        Transfer* sender = mSenderModel->getTransfer(currIndex.row());
         sender->pause();
     }
 }
@@ -257,7 +273,7 @@ void MainWindow::onSenderResumeClicked()
 {
     QModelIndex currIndex = ui->senderTableView->currentIndex();
     if (currIndex.isValid()) {
-        Sender* sender = mSenderModel->getSender(currIndex.row());
+        Transfer* sender = mSenderModel->getTransfer(currIndex.row());
         sender->resume();
     }
 }
@@ -266,8 +282,8 @@ void MainWindow::onSenderResumeClicked()
 void MainWindow::onReceiverTableDoubleClicked(const QModelIndex& index)
 {
     if (index.isValid()) {
-        Receiver* rec = mReceiverModel->getReceiver(index.row());
-        if (rec && rec->getState() == TransferState::Finish)
+        TransferInfo* ti = mReceiverModel->getTransferInfo(index.row());
+        if (ti && ti->getState() == TransferState::Finish)
             openReceiverFileInCurrentIndex();
     }
 }
@@ -283,14 +299,12 @@ void MainWindow::onReceiverTableSelectionChanged(const QItemSelection &selected,
 
         QModelIndex first = selected.indexes().first();
         if (first.isValid()) {
-            Receiver* rec = mReceiverModel->getReceiver(first.row());
-            if (rec) {
-                ui->resumeReceiverBtn->setEnabled(rec->canResume());
-                ui->pauseReceiverBtn->setEnabled(rec->canPause());
-                ui->cancelReceiverBtn->setEnabled(rec->canCancel());
+            TransferInfo* ti = mReceiverModel->getTransferInfo(first.row());
+            ui->resumeReceiverBtn->setEnabled(ti->canResume());
+            ui->pauseReceiverBtn->setEnabled(ti->canPause());
+            ui->cancelReceiverBtn->setEnabled(ti->canCancel());
 
-                connect(rec, &Receiver::stateChanged, this, &MainWindow::onSelectedReceiverStateChanged);
-            }
+            connect(ti, &TransferInfo::stateChanged, this, &MainWindow::onSelectedReceiverStateChanged);
         }
 
     }
@@ -299,10 +313,8 @@ void MainWindow::onReceiverTableSelectionChanged(const QItemSelection &selected,
 
         QModelIndex first = deselected.indexes().first();
         if (first.isValid()) {
-            Receiver* rec = mReceiverModel->getReceiver(first.row());
-            if (rec) {
-                disconnect(rec, &Receiver::stateChanged, this, &MainWindow::onSelectedReceiverStateChanged);
-            }
+            TransferInfo* ti = mReceiverModel->getTransferInfo(first.row());
+            disconnect(ti, &TransferInfo::stateChanged, this, &MainWindow::onSelectedReceiverStateChanged);
         }
 
     }
@@ -312,7 +324,7 @@ void MainWindow::onReceiverCancelClicked()
 {
     QModelIndex currIndex = ui->receiverTableView->currentIndex();
     if (currIndex.isValid()) {
-        Receiver* rec = mReceiverModel->getReceiver(currIndex.row());
+        Transfer* rec = mReceiverModel->getTransfer(currIndex.row());
         rec->cancel();
     }
 }
@@ -321,7 +333,7 @@ void MainWindow::onReceiverPauseClicked()
 {
     QModelIndex currIndex = ui->receiverTableView->currentIndex();
     if (currIndex.isValid()) {
-        Receiver* rec = mReceiverModel->getReceiver(currIndex.row());
+        Transfer* rec = mReceiverModel->getTransfer(currIndex.row());
         rec->pause();
     }
 }
@@ -330,7 +342,7 @@ void MainWindow::onReceiverResumeClicked()
 {
     QModelIndex currIndex = ui->receiverTableView->currentIndex();
     if (currIndex.isValid()) {
-        Receiver* rec = mReceiverModel->getReceiver(currIndex.row());
+        Transfer* rec = mReceiverModel->getTransfer(currIndex.row());
         rec->resume();
     }
 }
@@ -341,8 +353,8 @@ void MainWindow::onSenderTableContextMenuRequested(const QPoint& pos)
     QMenu contextMenu;
 
     if (currIndex.isValid()) {
-        Sender* sender = mSenderModel->getSender(currIndex.row());
-        TransferState state = sender->getState();
+        TransferInfo* ti = mSenderModel->getTransferInfo(currIndex.row());
+        TransferState state = ti->getState();
         bool enableRemove = state == TransferState::Finish ||
                             state == TransferState::Cancelled ||
                             state == TransferState::Disconnected ||
@@ -350,20 +362,22 @@ void MainWindow::onSenderTableContextMenuRequested(const QPoint& pos)
 
         contextMenu.addAction(tr("Open..."), this, SLOT(openSenderFileInCurrentIndex()));
         contextMenu.addAction(tr("Open folder..."), this, SLOT(openSenderFolderInCurrentIndex()));
-        contextMenu.addAction(tr("Send file..."), this, SLOT(onSendActionTriggered()));
+        contextMenu.addAction(tr("Send Files..."), this, SLOT(onSendActionTriggered()));
+        contextMenu.addAction(tr("Send Folder..."), this, SLOT(onSendFolderActionTriggered()));
         contextMenu.addAction(tr("Remove "),
                        this, SLOT(removeSenderItemInCurrentIndex()))->setEnabled(enableRemove);
         contextMenu.addAction(QIcon(":/img/clear.png"), tr("Clear list"), this, SLOT(onSenderClearClicked()));
         contextMenu.addSeparator();
         contextMenu.addAction(QIcon(":/img/pause.png"), tr("Pause"),
-                       this, SLOT(onSenderPauseClicked()))->setEnabled(sender->canPause());
+                       this, SLOT(onSenderPauseClicked()))->setEnabled(ti->canPause());
         contextMenu.addAction(QIcon(":/img/resume.png"), tr("Resume"),
-                       this, SLOT(onSenderResumeClicked()))->setEnabled(sender->canResume());
+                       this, SLOT(onSenderResumeClicked()))->setEnabled(ti->canResume());
         contextMenu.addAction(QIcon(":/img/cancel.png"), tr("Cancel"),
-                       this, SLOT(onSenderCancelClicked()))->setEnabled(sender->canCancel());
+                       this, SLOT(onSenderCancelClicked()))->setEnabled(ti->canCancel());
     }
     else {
-        contextMenu.addAction(tr("Send file..."), this, SLOT(onSendActionTriggered()));
+        contextMenu.addAction(tr("Send Files..."), this, SLOT(onSendActionTriggered()));
+        contextMenu.addAction(tr("Send Folder..."), this, SLOT(onSendFolderActionTriggered()));
         contextMenu.addAction(QIcon(":/img/clear.png"), tr("Clear list"), this, SLOT(onSenderClearClicked()));
     }
 
@@ -377,8 +391,8 @@ void MainWindow::onReceiverTableContextMenuRequested(const QPoint& pos)
     QMenu contextMenu;
 
     if (currIndex.isValid()) {
-        Receiver* rec = mReceiverModel->getReceiver(currIndex.row());
-        TransferState state = rec->getState();
+        TransferInfo* ti = mReceiverModel->getTransferInfo(currIndex.row());
+        TransferState state = ti->getState();
         bool enableFileMenu = state == TransferState::Finish;
         bool enableRemove = state == TransferState::Finish ||
                             state == TransferState::Cancelled ||
@@ -392,11 +406,11 @@ void MainWindow::onReceiverTableContextMenuRequested(const QPoint& pos)
         contextMenu.addAction(QIcon(":/img/clear.png"), tr("Clear list"), this, SLOT(onReceiverClearClicked()));
         contextMenu.addSeparator();
         contextMenu.addAction(QIcon(":/img/pause.png"), tr("Pause"),
-                       this, SLOT(onReceiverPauseClicked()))->setEnabled(rec->canPause());
+                       this, SLOT(onReceiverPauseClicked()))->setEnabled(ti->canPause());
         contextMenu.addAction(QIcon(":/img/resume.png"), tr("Resume"),
-                       this, SLOT(onReceiverResumeClicked()))->setEnabled(rec->canResume());
+                       this, SLOT(onReceiverResumeClicked()))->setEnabled(ti->canResume());
         contextMenu.addAction(QIcon(":/img/cancel.png"), tr("Cancel"),
-                       this, SLOT(onReceiverCancelClicked()))->setEnabled(rec->canCancel());
+                       this, SLOT(onReceiverCancelClicked()))->setEnabled(ti->canCancel());
     }
     else {
         contextMenu.addAction(QIcon(":/img/clear.png"), tr("Clear list"), this, SLOT(onReceiverClearClicked()));
@@ -409,7 +423,7 @@ void MainWindow::onReceiverTableContextMenuRequested(const QPoint& pos)
 void MainWindow::openSenderFileInCurrentIndex()
 {
     QModelIndex currIndex = ui->senderTableView->currentIndex();
-    QModelIndex fileNameIndex = mSenderModel->index(currIndex.row(), (int)SenderTableModel::Column::FileName);
+    QModelIndex fileNameIndex = mSenderModel->index(currIndex.row(), (int)TransferTableModel::Column::FileName);
     QString fileName = mSenderModel->data(fileNameIndex).toString();
 
     QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
@@ -418,7 +432,7 @@ void MainWindow::openSenderFileInCurrentIndex()
 void MainWindow::openSenderFolderInCurrentIndex()
 {
     QModelIndex currIndex = ui->senderTableView->currentIndex();
-    QModelIndex fileNameIndex = mSenderModel->index(currIndex.row(), (int)SenderTableModel::Column::FileName);
+    QModelIndex fileNameIndex = mSenderModel->index(currIndex.row(), (int)TransferTableModel::Column::FileName);
     QString dir = QFileInfo(mSenderModel->data(fileNameIndex).toString()).absoluteDir().absolutePath();
 
     QDesktopServices::openUrl(QUrl::fromLocalFile(dir));
@@ -427,13 +441,13 @@ void MainWindow::openSenderFolderInCurrentIndex()
 void MainWindow::removeSenderItemInCurrentIndex()
 {
     QModelIndex currIndex = ui->senderTableView->currentIndex();
-    mSenderModel->removeSender(currIndex.row());
+    mSenderModel->removeTransfer(currIndex.row());
 }
 
 void MainWindow::openReceiverFileInCurrentIndex()
 {
     QModelIndex currIndex = ui->receiverTableView->currentIndex();
-    QModelIndex fileNameIndex = mReceiverModel->index(currIndex.row(), (int)ReceiverTableModel::Column::FileName);
+    QModelIndex fileNameIndex = mReceiverModel->index(currIndex.row(), (int)TransferTableModel::Column::FileName);
     QString fileName = mReceiverModel->data(fileNameIndex).toString();
 
     QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
@@ -442,7 +456,7 @@ void MainWindow::openReceiverFileInCurrentIndex()
 void MainWindow::openReceiverFolderInCurrentIndex()
 {
     QModelIndex currIndex = ui->receiverTableView->currentIndex();
-    QModelIndex fileNameIndex = mReceiverModel->index(currIndex.row(), (int)ReceiverTableModel::Column::FileName);
+    QModelIndex fileNameIndex = mReceiverModel->index(currIndex.row(), (int)TransferTableModel::Column::FileName);
     QString dir = QFileInfo(mReceiverModel->data(fileNameIndex).toString()).absoluteDir().absolutePath();
 
     QDesktopServices::openUrl(QUrl::fromLocalFile(dir));
@@ -451,20 +465,20 @@ void MainWindow::openReceiverFolderInCurrentIndex()
 void MainWindow::removeReceiverItemInCurrentIndex()
 {
     QModelIndex currIndex = ui->receiverTableView->currentIndex();
-    mReceiverModel->removeReceiver(currIndex.row());
+    mReceiverModel->removeTransfer(currIndex.row());
 }
 
 void MainWindow::deleteReceiverFileInCurrentIndex()
 {
     QModelIndex currIndex = ui->receiverTableView->currentIndex();
-    QModelIndex fileNameIndex = mReceiverModel->index(currIndex.row(), (int)ReceiverTableModel::Column::FileName);
+    QModelIndex fileNameIndex = mReceiverModel->index(currIndex.row(), (int)TransferTableModel::Column::FileName);
     QString fileName = mReceiverModel->data(fileNameIndex).toString();
 
     QString str = "Are you sure wants to delete<p>" + fileName + "?";
     QMessageBox::StandardButton ret = QMessageBox::question(this, tr("Delete"), str);
     if (ret == QMessageBox::Yes) {
         QFile::remove(fileName);
-        mReceiverModel->removeReceiver(currIndex.row());
+        mReceiverModel->removeTransfer(currIndex.row());
     }
 }
 
@@ -486,6 +500,24 @@ void MainWindow::onSelectedReceiverStateChanged(TransferState state)
 
 void MainWindow::setupToolbar()
 {
+    QMenu* sendMenu = new QMenu();
+    sendMenu->addAction(tr("Send Files..."),
+                    this, SLOT(onSendActionTriggered()));
+    sendMenu->addAction(tr("Send Folder..."),
+                    this, SLOT(onSendFolderActionTriggered()));
+
+    QToolButton* sendBtn = new QToolButton();
+    sendBtn->setPopupMode(QToolButton::InstantPopup);
+    sendBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    sendBtn->setText(tr("Send"));
+    sendBtn->setIcon(QIcon(":/img/send.png"));
+    sendBtn->setMenu(sendMenu);
+    ui->mainToolBar->addWidget(sendBtn);
+    ui->mainToolBar->addSeparator();
+
+    ui->mainToolBar->addAction(QIcon(":/img/settings.png"), tr("Settings"),
+                               this, SLOT(onSettingsActionTriggered()));
+
     QWidget* spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     ui->mainToolBar->addWidget(spacer);
@@ -504,3 +536,4 @@ void MainWindow::setupToolbar()
     aboutBtn->setPopupMode(QToolButton::InstantPopup);
     ui->mainToolBar->addWidget(aboutBtn);
 }
+

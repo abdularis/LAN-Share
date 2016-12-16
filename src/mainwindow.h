@@ -21,8 +21,7 @@
 
 #include <QMainWindow>
 
-#include "sendertablemodel.h"
-#include "receivertablemodel.h"
+#include "transfertablemodel.h"
 #include "devicelistmodel.h"
 #include "devicebroadcaster.h"
 #include "transferserver.h"
@@ -44,6 +43,7 @@ protected:
 
 private Q_SLOTS:
     void onSendActionTriggered();
+    void onSendFolderActionTriggered();
     void onSettingsActionTriggered();
     void onAboutActionTriggered();
 
@@ -84,15 +84,17 @@ private Q_SLOTS:
 private:
     void setupToolbar();
     void connectSignals();
-    void sendFile(const QString& fileName, const Device& receiver);
+    void sendFile(const QString& folderName, const QString& fileName, const Device& receiver);
+    void selectReceiversAndSendTheFiles(QVector<QPair<QString, QString> > dirNameAndFullPath);
 
     bool anyActiveSender();
     bool anyActiveReceiver();
 
+
     Ui::MainWindow *ui;
 
-    SenderTableModel* mSenderModel;
-    ReceiverTableModel* mReceiverModel;
+    TransferTableModel* mSenderModel;
+    TransferTableModel* mReceiverModel;
     DeviceListModel* mDeviceModel;
 
     DeviceBroadcaster* mBroadcaster;

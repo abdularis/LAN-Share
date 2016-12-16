@@ -24,13 +24,13 @@ SOURCES += main.cpp\
     settings.cpp \
     transfer.cpp \
     transferserver.cpp \
-    sendertablemodel.cpp \
     receiverselectordialog.cpp \
-    receivertablemodel.cpp \
     aboutdialog.cpp \
     settingsdialog.cpp \
     util.cpp \
-    textviewdialog.cpp
+    transferinfo.cpp \
+#    transfermanager.cpp \
+    transfertablemodel.cpp
 
 HEADERS  += mainwindow.h \
     device.h \
@@ -41,19 +41,18 @@ HEADERS  += mainwindow.h \
     settings.h \
     transfer.h \
     transferserver.h \
-    sendertablemodel.h \
     receiverselectordialog.h \
-    receivertablemodel.h \
     aboutdialog.h \
     settingsdialog.h \
     util.h \
-    textviewdialog.h
+    transferinfo.h \
+#    transfermanager.h \
+    transfertablemodel.h
 
 FORMS    += mainwindow.ui \
     receiverselectordialog.ui \
     aboutdialog.ui \
-    settingsdialog.ui \
-    textviewdialog.ui
+    settingsdialog.ui
 
 RESOURCES += \
     res.qrc

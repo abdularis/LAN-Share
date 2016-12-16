@@ -18,76 +18,18 @@
 
 #include "transfer.h"
 
-Transfer::Transfer(QFile* file, QTcpSocket* socket, QObject* parent)
-    : QObject(parent), mFile(file), mProgress(0),
-      mState(TransferState::Idle), mLastState(TransferState::Idle),
+Transfer::Transfer(QTcpSocket* socket, QObject* parent)
+    : QObject(parent), mFile(NULL),
       mPacketSize(-1)
 {
+    mInfo = new TransferInfo(this, this);
     setSocket(socket);
+    mHeaderSize = sizeof(PacketType) + sizeof(mPacketSize);
 }
 
 Transfer::~Transfer()
 {
-    qDebug() << "Transfer() desctructor called";
-}
-
-void Transfer::setProgress(int progress)
-{
-    if (progress != mProgress) {
-        mProgress = progress;
-        emit progressChanged(mProgress);
-    }
-}
-
-void Transfer::setState(TransferState state)
-{
-    if (state != mState) {
-        TransferState tmp = mState;
-
-        switch (mState) {
-        case TransferState::Idle : {
-            if (state == TransferState::Waiting) {
-                mState = state;
-                emit stateChanged(mState);
-            }
-            break;
-        }
-        case TransferState::Waiting : {
-            if (state == TransferState::Transfering ||
-                    state == TransferState::Cancelled ||
-                    state == TransferState::Paused) {
-                mState = state;
-                emit stateChanged(mState);
-            }
-            break;
-        }
-        case TransferState::Transfering : {
-            if (state == TransferState::Disconnected ||
-                    state == TransferState::Finish ||
-                    state == TransferState::Cancelled ||
-                    state == TransferState::Paused) {
-                mState = state;
-                emit stateChanged(mState);
-            }
-            break;
-        }
-        case TransferState::Paused : {
-            if (state == TransferState::Waiting ||
-                    state == TransferState::Transfering) {
-                mState = mLastState;
-                emit stateChanged(mState);
-            }
-            else if (state == TransferState::Cancelled ||
-                     state == TransferState::Disconnected) {
-                mState = state;
-                emit stateChanged(mState);
-            }
-            break;
-        }
-        }
-
-        mLastState = tmp;
-    }
+//    qDebug() << "Transfer() desctructor called";
 }
 
 void Transfer::resume()
@@ -105,33 +47,22 @@ void Transfer::cancel()
     
 }
 
-
-bool Transfer::canResume() const
-{
-    return mState == TransferState::Paused;
-}
-
-bool Transfer::canPause() const
-{
-    return mState == TransferState::Waiting ||
-            mState == TransferState::Transfering;
-}
-
-bool Transfer::canCancel() const
-{
-    return mState == TransferState::Waiting ||
-            mState == TransferState::Transfering ||
-            mState == TransferState::Paused;
-}
-
 void Transfer::onReadyRead()
 {
-    if (mState == TransferState::Cancelled)
+    /*
+     * Abaikan data yg diterima jika state transfer 'Cancelled' (Dibatalkan)
+     */
+    if (mInfo->getState() == TransferState::Cancelled)
         return;
 
     mBuff.append(mSocket->readAll());
 
-    while (mBuff.size() >= HEADER_SIZE) {
+    /*
+     * Jika ukuran buffer sudah >= ukuran header, maka pda buffer tsb
+     * terdapat data header yg dpt kita extrak
+     * dt header --> packet size (4 bytes) & packet type (1 byte)
+     */
+    while (mBuff.size() >= mHeaderSize) {
         if (mPacketSize < 0) {
             memcpy(&mPacketSize, mBuff.constData(), sizeof(mPacketSize));
             mBuff.remove(0, sizeof(mPacketSize));
@@ -217,3 +148,4 @@ void Transfer::setSocket(QTcpSocket *socket)
         connect(mSocket, &QTcpSocket::readyRead, this, &Transfer::onReadyRead);
     }
 }
+

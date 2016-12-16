@@ -20,7 +20,6 @@
 
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
-#include "textviewdialog.h"
 #include "settings.h"
 
 AboutDialog::AboutDialog(QWidget *parent) :

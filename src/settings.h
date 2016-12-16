@@ -28,7 +28,7 @@
 #if defined (Q_OS_WIN)
     #define OS_NAME "Windows"
 #elif defined (Q_OS_OSX)
-    #define OS_NAME "Max OSX"
+    #define OS_NAME "Mac OSX"
 #elif defined (Q_OS_LINUX)
     #define OS_NAME "Linux"
 #else
@@ -37,10 +37,10 @@
 
 #define ProgramName         "LANShare"
 #define ProgramDescription  "A simple program that let you transfer files over local area network (LAN) easily."
-#define ProgramXVersion     0
-#define ProgramYVersion     2
+#define ProgramXVersion     1
+#define ProgramYVersion     0
 #define ProgramZVersion     0
-#define SettingsFileName    "l-conf"
+#define SettingsFileName    "LANSConfig"
 
 class Settings
 {

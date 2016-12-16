@@ -20,13 +20,25 @@
 #define UTIL_H
 
 #include <QString>
+#include <QDir>
+#include <QVector>
+#include <QPair>
 
 class Util
 {
 public:
     Util();
 
-    static QString fileSizeToString(qint64 size);
+    static QString sizeToString(qint64 size);
+
+    /*
+     *  relative dir name
+     *          |        +------> full path to file inside relative dir name
+     *          |        |
+     * QPair<QString, QString>
+     */
+    static QVector< QPair<QString, QString> >
+        getRelativeDirNameAndFullFilePath(const QDir& startingDir, const QString& innerDirName);
 };
 
 #endif // UTIL_H

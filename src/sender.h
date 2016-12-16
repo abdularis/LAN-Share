@@ -25,7 +25,7 @@
 class Sender : public Transfer
 {
 public:
-    Sender(Device receiver, const QString& fileName, QObject* parent = 0);
+    Sender(Device receiver, const QString& folderName, const QString& filePath, QObject* parent = 0);
     ~Sender();
 
     bool start();
@@ -52,6 +52,7 @@ private:
 
     Device mReceiverDev;
     QString mFilePath;
+    QString mFolderName;
     qint64 mFileSize;
     qint64 mBytesRemaining;
 
