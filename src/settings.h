@@ -72,6 +72,8 @@ private:
     Settings();
     void loadSettings();
 
+    QString getDefaultDownloadPath();
+
     Device mThisDevice;
     quint16 mBCPort;
     quint16 mTransferPort;

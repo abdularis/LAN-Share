@@ -32,7 +32,7 @@ SingleInstance::~SingleInstance()
 
 QString SingleInstance::getLastErrorString() const
 {
-    mServer.errorString();
+    return mServer.errorString();
 }
 
 bool SingleInstance::start()

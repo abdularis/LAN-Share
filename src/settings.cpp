@@ -91,9 +91,7 @@ void Settings::loadSettings()
     mBCPort = settings.value("BroadcastPort", DefaultBroadcastPort).value<quint16>();
     mTransferPort = settings.value("TransferPort", DefaultTransferPort).value<quint16>();
     mFileBuffSize = settings.value("FileBufferSize", DefaultFileBufferSize).value<quint32>();
-
-    QString defDir = QDir::homePath() + QDir::separator() + "LocallyDownloads";
-    mDownloadDir = settings.value("DownloadDir", defDir).toString();
+    mDownloadDir = settings.value("DownloadDir", getDefaultDownloadPath()).toString();
 
     if (!QDir(mDownloadDir).exists()) {
         QDir dir;
@@ -101,6 +99,16 @@ void Settings::loadSettings()
     }
 
     mBCInterval = settings.value("BroadcastInterval", DefaultBroadcastInterval).value<quint16>();
+}
+
+QString Settings::getDefaultDownloadPath()
+{
+#if defined (Q_OS_WIN)
+    return
+        QStandardPaths::locate(QStandardPaths::DownloadLocation, QString(), QStandardPaths::LocateDirectory) + "LANShareDownloads";
+#else
+    return QDir::homePath() + QDir::separator() + "LANShareDownloads";
+#endif
 }
 
 void Settings::saveSettings()
@@ -121,13 +129,7 @@ void Settings::reset()
     mTransferPort = DefaultTransferPort;
     mBCInterval = DefaultBroadcastInterval;
     mFileBuffSize = DefaultFileBufferSize;
-#if defined (Q_OS_WIN)
-    mDownloadDir =
-            QStandardPaths::locate(QStandardPaths::DownloadLocation, QString(), QStandardPaths::LocateDirectory) + "LANShareDownloads";
-#else
-    mDownloadDir = QDir::homePath() + QDir::separator() + "LANShareDownloads";
-#endif
-
+    mDownloadDir = getDefaultDownloadPath();
 }
 
 quint16 Settings::getBroadcastPort() const
