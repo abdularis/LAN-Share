@@ -16,31 +16,35 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef UTIL_H
-#define UTIL_H
 
-#include <QString>
-#include <QDir>
-#include <QVector>
-#include <QPair>
+#ifndef SINGLEINSTANCE_H
+#define SINGLEINSTANCE_H
 
-class Util
+#include <QObject>
+#include <QtNetwork/QLocalServer>
+
+class SingleInstance : public QObject
 {
+    Q_OBJECT
+
 public:
-    Util();
+    SingleInstance(const QString& id, QObject* parent = 0);
+    ~SingleInstance();
 
-    static QString sizeToString(qint64 size);
+    QString getLastErrorString() const;
+    bool start();
+    bool hasPreviousInstance();
 
-    /*
-     *  relative dir name
-     *          |        +------> full path to file inside relative dir name
-     *          |        |
-     * QPair<QString, QString>
-     */
-    static QVector< QPair<QString, QString> >
-        getRelativeDirNameAndFullFilePath(const QDir& startingDir, const QString& innerDirName);
+Q_SIGNALS:
+    void newInstanceCreated();
 
-    static QString parseAppVersion(bool onlyVerNum = true);
+private Q_SLOTS:
+    void onNewConnection();
+
+private:
+
+    QLocalServer mServer;
+    QString mName;
 };
 
-#endif // UTIL_H
+#endif // SINGLEINSTANCE_H

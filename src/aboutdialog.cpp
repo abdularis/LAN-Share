@@ -21,6 +21,7 @@
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
 #include "settings.h"
+#include "util.h"
 
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent),
@@ -29,13 +30,9 @@ AboutDialog::AboutDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QString version = "v " + QString::number(ProgramXVersion) + "." +
-                             QString::number(ProgramYVersion) + "." +
-                             QString::number(ProgramZVersion) +
-                      " (" + QString(OS_NAME) + ")";
-    ui->programNameLbl->setText(ProgramName);
-    ui->programVersionLbl->setText(version);
-    ui->programDescLbl->setText(ProgramDescription);
+    ui->programNameLbl->setText(PROGRAM_NAME);
+    ui->programVersionLbl->setText(Util::parseAppVersion(false));
+    ui->programDescLbl->setText(PROGRAM_DESC);
 
     ui->textEdit->setVisible(false);
 }

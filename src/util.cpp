@@ -19,6 +19,7 @@
 #include <QFileInfo>
 
 #include "util.h"
+#include "settings.h"
 
 Util::Util()
 {
@@ -69,4 +70,18 @@ QVector< QPair<QString, QString> >
     }
 
     return pairs;
+}
+
+QString Util::parseAppVersion(bool onlyVerNum)
+{
+    if (onlyVerNum) {
+        return QString::number(PROGRAM_X_VER) + "." +
+               QString::number(PROGRAM_Y_VER) + "." +
+               QString::number(PROGRAM_Z_VER);
+    }
+
+    return "v " + QString::number(PROGRAM_X_VER) + "." +
+           QString::number(PROGRAM_Y_VER) + "." +
+           QString::number(PROGRAM_Z_VER) +
+           " (" + QString(OS_NAME) + ")";
 }

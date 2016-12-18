@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     util.cpp \
     transferinfo.cpp \
 #    transfermanager.cpp \
-    transfertablemodel.cpp
+    transfertablemodel.cpp \
+    singleinstance.cpp
 
 HEADERS  += mainwindow.h \
     device.h \
@@ -47,7 +48,8 @@ HEADERS  += mainwindow.h \
     util.h \
     transferinfo.h \
 #    transfermanager.h \
-    transfertablemodel.h
+    transfertablemodel.h \
+    singleinstance.h
 
 FORMS    += mainwindow.ui \
     receiverselectordialog.ui \

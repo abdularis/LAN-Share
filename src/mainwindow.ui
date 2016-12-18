@@ -471,54 +471,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>cancelSenderBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>onSenderCancelClicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>815</x>
-     <y>22</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>551</x>
-     <y>8</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pauseSenderBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>onSenderPauseClicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>772</x>
-     <y>27</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1043</x>
-     <y>47</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>resumeSenderBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>onSenderResumeClicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>733</x>
-     <y>21</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>932</x>
-     <y>99</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>cancelReceiverBtn</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
@@ -595,6 +547,54 @@
     <hint type="destinationlabel">
      <x>-35</x>
      <y>333</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelSenderBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onSenderCancelClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>815</x>
+     <y>22</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>551</x>
+     <y>8</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pauseSenderBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onSenderPauseClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>772</x>
+     <y>27</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1043</x>
+     <y>47</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resumeSenderBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onSenderResumeClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>733</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>932</x>
+     <y>99</y>
     </hint>
    </hints>
   </connection>

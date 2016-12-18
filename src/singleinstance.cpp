@@ -16,39 +16,40 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QApplication>
-#include <QtDebug>
+#include <QtNetwork/QLocalSocket>
 
-#include "settings.h"
-#include "mainwindow.h"
 #include "singleinstance.h"
-#include "util.h"
 
-int main(int argc, char *argv[])
+SingleInstance::SingleInstance(const QString& name, QObject* parent)
+    : QObject(parent), mName(name)
 {
-    QApplication app(argc, argv);
-    app.setQuitOnLastWindowClosed(false);
+    connect(&mServer, &QLocalServer::newConnection, this, &SingleInstance::onNewConnection);
+}
 
-    SingleInstance si(PROGRAM_NAME);
-    if (si.hasPreviousInstance()) {
-        return EXIT_SUCCESS;
-    }
+SingleInstance::~SingleInstance()
+{
+}
 
-    if (!si.start()) {
-        qDebug() << si.getLastErrorString();
-        return EXIT_FAILURE;
-    }
+QString SingleInstance::getLastErrorString() const
+{
+    mServer.errorString();
+}
 
-    app.setApplicationDisplayName(PROGRAM_NAME);
-    app.setApplicationName(PROGRAM_NAME);
-    app.setApplicationVersion(Util::parseAppVersion());
+bool SingleInstance::start()
+{
+    mServer.removeServer(mName);
+    return mServer.listen(mName);
+}
 
-    MainWindow mainWindow;
-    mainWindow.show();
+bool SingleInstance::hasPreviousInstance()
+{
+    QLocalSocket socket;
+    socket.connectToServer(mName);
 
-    QObject::connect(&si, &SingleInstance::newInstanceCreated, [&mainWindow]() {
-        mainWindow.setMainWindowVisibility(true);
-    });
+    return socket.waitForConnected();
+}
 
-    return app.exec();
+void SingleInstance::onNewConnection()
+{
+    emit newInstanceCreated();
 }

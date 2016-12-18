@@ -86,7 +86,7 @@ void Settings::setDownloadDir(const QString& dir)
 
 void Settings::loadSettings()
 {
-    QSettings settings(SettingsFileName);
+    QSettings settings(SETTINGS_FILE);
     mThisDevice.setName(settings.value("DeviceName", QHostInfo::localHostName()).toString());
     mBCPort = settings.value("BroadcastPort", DefaultBroadcastPort).value<quint16>();
     mTransferPort = settings.value("TransferPort", DefaultTransferPort).value<quint16>();
@@ -105,7 +105,7 @@ void Settings::loadSettings()
 
 void Settings::saveSettings()
 {
-    QSettings settings(SettingsFileName);
+    QSettings settings(SETTINGS_FILE);
     settings.setValue("DeviceName", mThisDevice.getName());
     settings.setValue("BroadcastPort", mBCPort);
     settings.setValue("TransferPort", mTransferPort);

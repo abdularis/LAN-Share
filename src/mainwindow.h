@@ -20,6 +20,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSystemTrayIcon>
 
 #include "transfertablemodel.h"
 #include "devicelistmodel.h"
@@ -41,8 +42,12 @@ public:
 protected:
     void closeEvent(QCloseEvent* event);
 
+public Q_SLOTS:
+    void setMainWindowVisibility(bool visible = true);
+
 private Q_SLOTS:
-    void onSendActionTriggered();
+    void onShowMainWindowTriggered();
+    void onSendFilesActionTriggered();
     void onSendFolderActionTriggered();
     void onSettingsActionTriggered();
     void onAboutActionTriggered();
@@ -81,8 +86,12 @@ private Q_SLOTS:
     void onSelectedSenderStateChanged(TransferState state);
     void onSelectedReceiverStateChanged(TransferState state);
 
+    void quitApp();
+
 private:
+    void setupActions();
     void setupToolbar();
+    void setupSystrayIcon();
     void connectSignals();
     void sendFile(const QString& folderName, const QString& fileName, const Device& receiver);
     void selectReceiversAndSendTheFiles(QVector<QPair<QString, QString> > dirNameAndFullPath);
@@ -90,8 +99,10 @@ private:
     bool anyActiveSender();
     bool anyActiveReceiver();
 
-
+    bool mForceQuit;
     Ui::MainWindow *ui;
+    QSystemTrayIcon* mSystrayIcon;
+    QMenu* mSystrayMenu;
 
     TransferTableModel* mSenderModel;
     TransferTableModel* mReceiverModel;
@@ -100,7 +111,30 @@ private:
     DeviceBroadcaster* mBroadcaster;
     TransferServer* mTransServer;
 
+    QAction* mShowMainWindowAction;
+    QAction* mSendFilesAction;
+    QAction* mSendFolderAction;
+    QAction* mSettingsAction;
+    QAction* mAboutAction;
+    QAction* mAboutQtAction;
+    QAction* mQuitAction;
 
+    QAction* mSenderOpenAction;
+    QAction* mSenderOpenFolderAction;
+    QAction* mSenderRemoveAction;
+    QAction* mSenderClearAction;
+    QAction* mSenderPauseAction;
+    QAction* mSenderResumeAction;
+    QAction* mSenderCancelAction;
+
+    QAction* mRecOpenAction;
+    QAction* mRecOpenFolderAction;
+    QAction* mRecRemoveAction;
+    QAction* mRecDeleteAction;
+    QAction* mRecClearAction;
+    QAction* mRecPauseAction;
+    QAction* mRecResumeAction;
+    QAction* mRecCancelAction;
 };
 
 #endif // MAINWINDOW_H

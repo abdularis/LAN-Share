@@ -38,11 +38,13 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow), mForceQuit(false)
 {
     ui->setupUi(this);
+    setupActions();
     setupToolbar();
-    setWindowTitle(ProgramName);
+    setupSystrayIcon();
+    setWindowTitle(PROGRAM_NAME);
 
     mBroadcaster = new DeviceBroadcaster(this);
     mBroadcaster->start();
@@ -78,6 +80,12 @@ MainWindow::~MainWindow()
  */
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    if (mSystrayIcon && mSystrayIcon->isVisible() && !mForceQuit) {
+        setMainWindowVisibility(false);
+        event->ignore();
+        return;
+    }
+
     auto checkTransferState = [](Transfer* t) {
         if (!t)
             return false;
@@ -107,12 +115,30 @@ void MainWindow::closeEvent(QCloseEvent *event)
         QMessageBox::StandardButton ret =
                 QMessageBox::question(this, tr("Confirm close"),
                                       tr("You are about to close & abort all transfers. Do you want to continue?"));
-        if (ret == QMessageBox::Yes) {
-            event->accept();
-        }
-        else {
+        if (ret == QMessageBox::No) {
             event->ignore();
+            mForceQuit = false;
+            return;
         }
+    }
+
+    event->accept();
+    qApp->quit();
+}
+
+void MainWindow::setMainWindowVisibility(bool visible)
+{
+    if (visible) {
+        showNormal();
+        setWindowState(Qt::WindowNoState);
+        qApp->processEvents();
+        setWindowState(Qt::WindowActive);
+        qApp->processEvents();
+        qApp->setActiveWindow(this);
+        qApp->processEvents();
+    }
+    else {
+        hide();
     }
 }
 
@@ -164,7 +190,12 @@ void MainWindow::selectReceiversAndSendTheFiles(QVector<QPair<QString, QString> 
     }
 }
 
-void MainWindow::onSendActionTriggered()
+void MainWindow::onShowMainWindowTriggered()
+{
+    setMainWindowVisibility(true);
+}
+
+void MainWindow::onSendFilesActionTriggered()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Select files"), QDir::homePath());
     if (fileNames.size() <= 0)
@@ -360,25 +391,29 @@ void MainWindow::onSenderTableContextMenuRequested(const QPoint& pos)
                             state == TransferState::Disconnected ||
                             state == TransferState::Idle;
 
-        contextMenu.addAction(tr("Open..."), this, SLOT(openSenderFileInCurrentIndex()));
-        contextMenu.addAction(tr("Open folder..."), this, SLOT(openSenderFolderInCurrentIndex()));
-        contextMenu.addAction(tr("Send Files..."), this, SLOT(onSendActionTriggered()));
-        contextMenu.addAction(tr("Send Folder..."), this, SLOT(onSendFolderActionTriggered()));
-        contextMenu.addAction(tr("Remove "),
-                       this, SLOT(removeSenderItemInCurrentIndex()))->setEnabled(enableRemove);
-        contextMenu.addAction(QIcon(":/img/clear.png"), tr("Clear list"), this, SLOT(onSenderClearClicked()));
+        mSenderRemoveAction->setEnabled(enableRemove);
+        mSenderPauseAction->setEnabled(ti->canPause());
+        mSenderResumeAction->setEnabled(ti->canResume());
+        mSenderCancelAction->setEnabled(ti->canCancel());
+
+        contextMenu.addAction(mSenderOpenAction);
+        contextMenu.addAction(mSenderOpenFolderAction);
         contextMenu.addSeparator();
-        contextMenu.addAction(QIcon(":/img/pause.png"), tr("Pause"),
-                       this, SLOT(onSenderPauseClicked()))->setEnabled(ti->canPause());
-        contextMenu.addAction(QIcon(":/img/resume.png"), tr("Resume"),
-                       this, SLOT(onSenderResumeClicked()))->setEnabled(ti->canResume());
-        contextMenu.addAction(QIcon(":/img/cancel.png"), tr("Cancel"),
-                       this, SLOT(onSenderCancelClicked()))->setEnabled(ti->canCancel());
+        contextMenu.addAction(mSendFilesAction);
+        contextMenu.addAction(mSendFolderAction);
+        contextMenu.addSeparator();
+        contextMenu.addAction(mSenderRemoveAction);
+        contextMenu.addAction(mSenderClearAction);
+        contextMenu.addSeparator();
+        contextMenu.addAction(mSenderPauseAction);
+        contextMenu.addAction(mSenderResumeAction);
+        contextMenu.addAction(mSenderCancelAction);
     }
     else {
-        contextMenu.addAction(tr("Send Files..."), this, SLOT(onSendActionTriggered()));
-        contextMenu.addAction(tr("Send Folder..."), this, SLOT(onSendFolderActionTriggered()));
-        contextMenu.addAction(QIcon(":/img/clear.png"), tr("Clear list"), this, SLOT(onSenderClearClicked()));
+        contextMenu.addAction(mSendFilesAction);
+        contextMenu.addAction(mSendFolderAction);
+        contextMenu.addSeparator();
+        contextMenu.addAction(mSenderClearAction);
     }
 
     QPoint globPos = ui->senderTableView->mapToGlobal(pos);
@@ -399,21 +434,26 @@ void MainWindow::onReceiverTableContextMenuRequested(const QPoint& pos)
                             state == TransferState::Disconnected ||
                             state == TransferState::Idle;
 
-        contextMenu.addAction(tr("Open..."), this, SLOT(openReceiverFileInCurrentIndex()))->setEnabled(enableFileMenu);
-        contextMenu.addAction(tr("Open folder..."), this, SLOT(openReceiverFolderInCurrentIndex()))->setEnabled(enableFileMenu);
-        contextMenu.addAction(tr("Remove"), this, SLOT(removeReceiverItemInCurrentIndex()))->setEnabled(enableFileMenu || enableRemove);
-        contextMenu.addAction(tr("Delete from disk"), this, SLOT(deleteReceiverFileInCurrentIndex()))->setEnabled(enableFileMenu);
-        contextMenu.addAction(QIcon(":/img/clear.png"), tr("Clear list"), this, SLOT(onReceiverClearClicked()));
+        mRecOpenAction->setEnabled(enableFileMenu);
+        mRecOpenFolderAction->setEnabled(enableFileMenu);
+        mRecRemoveAction->setEnabled(enableFileMenu | enableRemove);
+        mRecDeleteAction->setEnabled(enableFileMenu);
+        mRecPauseAction->setEnabled(ti->canPause());
+        mRecResumeAction->setEnabled(ti->canResume());
+        mRecCancelAction->setEnabled(ti->canCancel());
+
+        contextMenu.addAction(mRecOpenAction);
+        contextMenu.addAction(mRecOpenFolderAction);
+        contextMenu.addAction(mRecRemoveAction);
+        contextMenu.addAction(mRecDeleteAction);
+        contextMenu.addAction(mRecClearAction);
         contextMenu.addSeparator();
-        contextMenu.addAction(QIcon(":/img/pause.png"), tr("Pause"),
-                       this, SLOT(onReceiverPauseClicked()))->setEnabled(ti->canPause());
-        contextMenu.addAction(QIcon(":/img/resume.png"), tr("Resume"),
-                       this, SLOT(onReceiverResumeClicked()))->setEnabled(ti->canResume());
-        contextMenu.addAction(QIcon(":/img/cancel.png"), tr("Cancel"),
-                       this, SLOT(onReceiverCancelClicked()))->setEnabled(ti->canCancel());
+        contextMenu.addAction(mRecPauseAction);
+        contextMenu.addAction(mRecResumeAction);
+        contextMenu.addAction(mRecCancelAction);
     }
     else {
-        contextMenu.addAction(QIcon(":/img/clear.png"), tr("Clear list"), this, SLOT(onReceiverClearClicked()));
+        contextMenu.addAction(mRecClearAction);
     }
 
     QPoint globPos = ui->receiverTableView->mapToGlobal(pos);
@@ -498,13 +538,17 @@ void MainWindow::onSelectedReceiverStateChanged(TransferState state)
                                     state == TransferState::Paused);
 }
 
+void MainWindow::quitApp()
+{
+    mForceQuit = true;
+    close();
+}
+
 void MainWindow::setupToolbar()
 {
     QMenu* sendMenu = new QMenu();
-    sendMenu->addAction(tr("Send Files..."),
-                    this, SLOT(onSendActionTriggered()));
-    sendMenu->addAction(tr("Send Folder..."),
-                    this, SLOT(onSendFolderActionTriggered()));
+    sendMenu->addAction(mSendFilesAction);
+    sendMenu->addAction(mSendFolderAction);
 
     QToolButton* sendBtn = new QToolButton();
     sendBtn->setPopupMode(QToolButton::InstantPopup);
@@ -515,18 +559,15 @@ void MainWindow::setupToolbar()
     ui->mainToolBar->addWidget(sendBtn);
     ui->mainToolBar->addSeparator();
 
-    ui->mainToolBar->addAction(QIcon(":/img/settings.png"), tr("Settings"),
-                               this, SLOT(onSettingsActionTriggered()));
+    ui->mainToolBar->addAction(mSettingsAction);
 
     QWidget* spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     ui->mainToolBar->addWidget(spacer);
 
     QMenu* menu = new QMenu();
-    menu->addAction(QIcon(":/img/about.png"), tr("About"),
-                    this, SLOT(onAboutActionTriggered()))->setMenuRole(QAction::AboutRole);
-    menu->addAction(tr("About Qt"),
-                    QApplication::instance(), SLOT(aboutQt()))->setMenuRole(QAction::AboutQtRole);
+    menu->addAction(mAboutAction);
+    menu->addAction(mAboutQtAction);
 
     QToolButton* aboutBtn = new QToolButton();
     aboutBtn->setText(tr("About"));
@@ -537,3 +578,78 @@ void MainWindow::setupToolbar()
     ui->mainToolBar->addWidget(aboutBtn);
 }
 
+void MainWindow::setupActions()
+{
+    mShowMainWindowAction = new QAction(tr("Show Main Window"), this);
+    connect(mShowMainWindowAction, &QAction::triggered, this, &MainWindow::onShowMainWindowTriggered);
+    mSendFilesAction = new QAction(QIcon(":/img/file.png"), tr("Send files..."), this);
+    connect(mSendFilesAction, &QAction::triggered, this, &MainWindow::onSendFilesActionTriggered);
+    mSendFolderAction = new QAction(QIcon(":/img/folder.png"), tr("Send folder..."), this);
+    connect(mSendFolderAction, &QAction::triggered, this, &MainWindow::onSendFolderActionTriggered);
+    mSettingsAction = new QAction(QIcon(":/img/settings.png"), tr("Settings"), this);
+    connect(mSettingsAction, &QAction::triggered, this, &MainWindow::onSettingsActionTriggered);
+    mAboutAction = new QAction(QIcon(":/img/about.png"), tr("About"), this);
+    mAboutAction->setMenuRole(QAction::AboutRole);
+    connect(mAboutAction, &QAction::triggered, this, &MainWindow::onAboutActionTriggered);
+    mAboutQtAction = new QAction(tr("About Qt"), this);
+    mAboutQtAction->setMenuRole(QAction::AboutQtRole);
+    connect(mAboutQtAction, &QAction::triggered, QApplication::instance(), &QApplication::aboutQt);
+    mQuitAction = new QAction(tr("Quit"), this);
+    connect(mQuitAction, &QAction::triggered, this, &MainWindow::quitApp);
+
+    mSenderOpenAction = new QAction(tr("Open"), this);
+    connect(mSenderOpenAction, &QAction::triggered, this, &MainWindow::openSenderFileInCurrentIndex);
+    mSenderOpenFolderAction = new QAction(tr("Open folder"), this);
+    connect(mSenderOpenFolderAction, &QAction::triggered, this, &MainWindow::openSenderFolderInCurrentIndex);
+    mSenderRemoveAction = new QAction(QIcon(":/img/remove.png"), tr("Remove"), this);
+    connect(mSenderRemoveAction, &QAction::triggered, this, &MainWindow::removeSenderItemInCurrentIndex);
+    mSenderClearAction = new QAction(QIcon(":/img/clear.png"), tr("Clear"), this);
+    connect(mSenderClearAction, &QAction::triggered, this, &MainWindow::onSenderClearClicked);
+    mSenderPauseAction = new QAction(QIcon(":/img/pause.png"), tr("Pause"), this);
+    connect(mSenderPauseAction, &QAction::triggered, this, &MainWindow::onSenderPauseClicked);
+    mSenderResumeAction = new QAction(QIcon(":/img/resume.png"), tr("Resume"), this);
+    connect(mSenderResumeAction, &QAction::triggered, this, &MainWindow::onSenderResumeClicked);
+    mSenderCancelAction = new QAction(QIcon(":/img/cancel.png"), tr("Cancel"), this);
+    connect(mSenderCancelAction, &QAction::triggered, this, &MainWindow::onSenderCancelClicked);
+
+    mRecOpenAction = new QAction(tr("Open"), this);
+    connect(mRecOpenAction, &QAction::triggered, this, &MainWindow::openReceiverFileInCurrentIndex);
+    mRecOpenFolderAction = new QAction(tr("Open folder"), this);
+    connect(mRecOpenFolderAction, &QAction::triggered, this, &MainWindow::openReceiverFolderInCurrentIndex);
+    mRecRemoveAction = new QAction(QIcon(":/img/remove.png"), tr("Remove"), this);
+    connect(mRecRemoveAction, &QAction::triggered, this, &MainWindow::removeReceiverItemInCurrentIndex);
+    mRecDeleteAction = new QAction(tr("Delete from disk"), this);
+    connect(mRecDeleteAction, &QAction::triggered, this, &MainWindow::deleteReceiverFileInCurrentIndex);
+    mRecClearAction = new QAction(QIcon(":/img/clear.png"), tr("Clear"), this);
+    connect(mRecClearAction, &QAction::triggered, this, &MainWindow::onReceiverClearClicked);
+    mRecPauseAction = new QAction(QIcon(":/img/pause.png"), tr("Pause"), this);
+    connect(mRecPauseAction, &QAction::triggered, this, &MainWindow::onReceiverPauseClicked);
+    mRecResumeAction = new QAction(QIcon(":/img/resume.png"), tr("Resume"), this);
+    connect(mRecResumeAction, &QAction::triggered, this, &MainWindow::onReceiverResumeClicked);
+    mRecCancelAction = new QAction(QIcon(":/img/cancel.png"), tr("Cancel"), this);
+    connect(mRecCancelAction, &QAction::triggered, this, &MainWindow::onReceiverCancelClicked);
+}
+
+void MainWindow::setupSystrayIcon()
+{
+    if (!QSystemTrayIcon::isSystemTrayAvailable()) {
+        mSystrayIcon = NULL;
+        return;
+    }
+
+    mSystrayMenu = new QMenu(this);
+    mSystrayMenu->addAction(mShowMainWindowAction);
+    mSystrayMenu->addSeparator();
+    mSystrayMenu->addAction(mSendFilesAction);
+    mSystrayMenu->addAction(mSendFolderAction);
+    mSystrayMenu->addSeparator();
+    mSystrayMenu->addAction(mAboutAction);
+    mSystrayMenu->addAction(mAboutQtAction);
+    mSystrayMenu->addSeparator();
+    mSystrayMenu->addAction(mQuitAction);
+
+    mSystrayIcon = new QSystemTrayIcon(QIcon(":/img/systray-icon.png"), this);
+    mSystrayIcon->setToolTip(tr(PROGRAM_NAME));
+    mSystrayIcon->setContextMenu(mSystrayMenu);
+    mSystrayIcon->show();
+}

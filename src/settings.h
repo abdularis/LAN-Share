@@ -35,12 +35,12 @@
     #define OS_NAME "Unknown"
 #endif
 
-#define ProgramName         "LANShare"
-#define ProgramDescription  "A simple program that let you transfer files over local area network (LAN) easily."
-#define ProgramXVersion     1
-#define ProgramYVersion     0
-#define ProgramZVersion     0
-#define SettingsFileName    "LANSConfig"
+#define PROGRAM_NAME         "LANShare"
+#define PROGRAM_DESC         "A simple program that let you transfer files over local area network (LAN) easily."
+#define PROGRAM_X_VER        1
+#define PROGRAM_Y_VER        1
+#define PROGRAM_Z_VER        0
+#define SETTINGS_FILE       "LANSConfig"
 
 class Settings
 {

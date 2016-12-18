@@ -16,5 +16,8 @@
         <file>img/linux.png</file>
         <file>img/osx.png</file>
         <file>img/windows.png</file>
+        <file>img/systray-icon.png</file>
+        <file>img/file.png</file>
+        <file>img/folder.png</file>
     </qresource>
 </RCC>
