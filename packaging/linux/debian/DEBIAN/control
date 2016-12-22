@@ -1,0 +1,8 @@
+Package: LANShare
+Version: 1.1.0-1
+License: GPL3
+Architecture: amd64
+Maintainer: Abdul Aris R. <abdularisrahmanudin10@gmail.com>
+Section: default
+Priority: extra
+Description: LANShare is a simple open-source cross platform application that let you transfer files and/or folder through local area network(LAN) easily. You can send and receive files and folder within LAN without any additional configuration needed on each platform. It can runs on most version of Windows(XP or later) and Linux(Debian, Ubuntu, Fedora, etc).
