@@ -5,7 +5,7 @@ LANShare adalah aplikasi file transfer pada jaringan lokal atau LAN (Local Area 
 
 ## Features
 * Kirim satu atau banyak file.
-* Kirim folder.
+* Kirim folder atau banyak folder.
 * Kirim ke banyak penerima sekaligus.
 * Operasi cancel, pause, resume saat transfer file.
 
