@@ -1,15 +1,13 @@
-#![Icon](src/img/icon.png)
+![Icon](src/img/icon.png)
 
 # LANShare
-LANShare adalah aplikasi file transfer pada jaringan lokal atau LAN (Local Area Network) berbasis GUI dengan menggunakan framework Qt, yang dapat dengan mudah digunakan untuk mentransfer file/banyak file secara langsung tanpa konfigurasi tambahan.
+LANShare adalah aplikasi file transfer pada jaringan lokal atau LAN (Local Area Network) berbasis GUI dengan menggunakan framework Qt, yang dapat dengan mudah digunakan untuk mentransfer file/banyak file berukuran besar secara langsung tanpa konfigurasi tambahan.
 
 ## Features
-* Mudah digunakan: Tidak perlu konfigurasi, tidak ada server dsb.
 * Kirim satu atau banyak file.
 * Kirim folder.
 * Kirim ke banyak penerima sekaligus.
 * Operasi cancel, pause, resume saat transfer file.
-* Open source.
 
 ## Penggunaan
 * Komputer yang digunakan harus sudah terhubung ke sebuah jaringan yang sama (wired atau wireless) seperti jaringan peer-to-peer dsb.
@@ -18,6 +16,6 @@ LANShare adalah aplikasi file transfer pada jaringan lokal atau LAN (Local Area 
 * File akan secara otomatis diterima pada komputer receiver.
 
 
-![Screenshot 1](screenshot.png ""Screenshot"")
+![Screenshot 1](screenshot.png)
 
-![Screenshot 2](screenshot2.png ""Screenshot2"") 
+![Screenshot 2](screenshot2.png) 
