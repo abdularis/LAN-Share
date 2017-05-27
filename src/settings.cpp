@@ -84,6 +84,11 @@ void Settings::setDownloadDir(const QString& dir)
         mDownloadDir = dir;
 }
 
+void Settings::setReplaceExistingFile(bool replace)
+{
+    mReplaceExistingFile = replace;
+}
+
 void Settings::loadSettings()
 {
     QSettings settings(SETTINGS_FILE);
@@ -99,6 +104,7 @@ void Settings::loadSettings()
     }
 
     mBCInterval = settings.value("BroadcastInterval", DefaultBroadcastInterval).value<quint16>();
+    mReplaceExistingFile = settings.value("ReplaceExistingFile", false).toBool();
 }
 
 QString Settings::getDefaultDownloadPath()
@@ -120,6 +126,7 @@ void Settings::saveSettings()
     settings.setValue("FileBufferSize", mFileBuffSize);
     settings.setValue("DownloadDir", mDownloadDir);
     settings.setValue("BroadcastInterval", mBCInterval);
+    settings.setValue("ReplaceExistingFile", mReplaceExistingFile);
 }
 
 void Settings::reset()
@@ -177,4 +184,8 @@ QHostAddress Settings::getDeviceAddress() const
     return mThisDevice.getAddress();
 }
 
+bool Settings::getReplaceExistingFile() const
+{
+    return mReplaceExistingFile;
+}
 

@@ -24,6 +24,8 @@
 #include <QToolButton>
 #include <QCloseEvent>
 #include <QtDebug>
+#include <QListView>
+#include <QTreeView>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -155,9 +157,9 @@ void MainWindow::connectSignals()
             this, &MainWindow::onReceiverTableSelectionChanged);
 }
 
-void MainWindow::sendFile(const QString& folderName, const QString &fileName, const Device &receiver)
+void MainWindow::sendFile(const QString& folderName, const QString &filePath, const Device &receiver)
 {
-    Sender* sender = new Sender(receiver, folderName, fileName, this);
+    Sender* sender = new Sender(receiver, folderName, filePath, this);
     sender->start();
     mSenderModel->insertTransfer(sender);
     QModelIndex progressIdx = mSenderModel->index(0, (int)TransferTableModel::Column::Progress);
@@ -180,6 +182,10 @@ void MainWindow::selectReceiversAndSendTheFiles(QVector<QPair<QString, QString> 
         for (Device receiver : receivers) {
             if (receiver.isValid()) {
 
+                /*
+                 * Memastikan bahwa device/kompuer ini terdaftar di penerima
+                 * Just to make sure.
+                 */
                 mBroadcaster->sendBroadcast();
                 for (auto p : dirNameAndFullPath) {
                     sendFile(p.first, p.second, receiver);
@@ -197,7 +203,7 @@ void MainWindow::onShowMainWindowTriggered()
 
 void MainWindow::onSendFilesActionTriggered()
 {
-    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Select files"), QDir::homePath());
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Select files"));
     if (fileNames.size() <= 0)
         return;
 
@@ -210,13 +216,38 @@ void MainWindow::onSendFilesActionTriggered()
 
 void MainWindow::onSendFolderActionTriggered()
 {
-    QString dirName = QFileDialog::getExistingDirectory(this, tr("Select Folder"), QDir::homePath(),
-                                                    QFileDialog::ShowDirsOnly);
-    if (dirName.isEmpty())
-        return;
+    QStringList dirs;
+    QFileDialog fDialog(this);
+    fDialog.setFileMode(QFileDialog::Directory);
+    fDialog.setOption(QFileDialog::ShowDirsOnly);
 
-    QDir dir(dirName);
-    QVector< QPair<QString, QString> > pairs = Util::getRelativeDirNameAndFullFilePath(dir, dir.dirName());
+    /*
+     * Enable multiple foder selection
+     */
+    QListView* lView = fDialog.findChild<QListView*>("listView");
+    if (lView)
+        lView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    QTreeView* tView = fDialog.findChild<QTreeView*>("treeView");
+    if (tView)
+        tView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+    fDialog.setOption(QFileDialog::DontUseNativeDialog, true);
+    if (!fDialog.exec()) {
+        return;
+    }
+
+    /*
+     * Iterate through all selected folders
+     */
+    QVector< QPair<QString, QString> > pairs;
+    dirs = fDialog.selectedFiles();
+    for (auto dirName : dirs) {
+
+        QDir dir(dirName);
+        QVector< QPair<QString, QString> > ps =
+                Util::getRelativeDirNameAndFullFilePath(dir, dir.dirName());
+        pairs.append(ps);
+    }
 
     selectReceiversAndSendTheFiles(pairs);
 }
@@ -584,7 +615,7 @@ void MainWindow::setupActions()
     connect(mShowMainWindowAction, &QAction::triggered, this, &MainWindow::onShowMainWindowTriggered);
     mSendFilesAction = new QAction(QIcon(":/img/file.png"), tr("Send files..."), this);
     connect(mSendFilesAction, &QAction::triggered, this, &MainWindow::onSendFilesActionTriggered);
-    mSendFolderAction = new QAction(QIcon(":/img/folder.png"), tr("Send folder..."), this);
+    mSendFolderAction = new QAction(QIcon(":/img/folder.png"), tr("Send folders..."), this);
     connect(mSendFolderAction, &QAction::triggered, this, &MainWindow::onSendFolderActionTriggered);
     mSettingsAction = new QAction(QIcon(":/img/settings.png"), tr("Settings"), this);
     connect(mSettingsAction, &QAction::triggered, this, &MainWindow::onSettingsActionTriggered);

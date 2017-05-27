@@ -85,3 +85,24 @@ QString Util::parseAppVersion(bool onlyVerNum)
            QString::number(PROGRAM_Z_VER) +
            " (" + QString(OS_NAME) + ")";
 }
+
+/*
+ * cek file path (folderName+fileName).
+ * jika file dengan nama "fileName" sudah ada
+ * maka cek lagi untuk "fileName (1)" jika masih ada chek lagi untuk "fileName (2)" dst.
+ * kemudian return file path untuk nama file yang belum ada.
+ */
+QString Util::getCheckedFilePath(const QString& fileName, const QString& folderPath)
+{
+    int count = 1;
+    QString originalFilePath = folderPath + QDir::separator() + fileName;
+    QString fPath = originalFilePath;
+    while (QFile::exists(fPath)) {
+        QFileInfo fInfo(originalFilePath);
+        QString baseName = fInfo.baseName() + " (" + QString::number(count) + ")";
+        fPath = folderPath + QDir::separator() + baseName + "." + fInfo.completeSuffix();
+        count++;
+    }
+
+    return fPath;
+}

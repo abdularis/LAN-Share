@@ -55,6 +55,7 @@ void SettingsDialog::onSaveClicked()
     set->setDeviceName(ui->deviceNameLineEdit->text());
     set->setDownloadDir(ui->downDirlineEdit->text());
     set->setBroadcastInterval(ui->bcIntervalSpinBox->value());
+    set->setReplaceExistingFile(ui->overwriteCheckBox->isChecked());
 
     set->saveSettings();
 
@@ -91,4 +92,5 @@ void SettingsDialog::assign()
     ui->transferPortSpinBox->setValue(sets->getTransferPort());
     ui->buffSizeSpinBox->setValue(sets->getFileBufferSize() / 1024);
     ui->bcIntervalSpinBox->setValue(sets->getBroadcastInterval());
+    ui->overwriteCheckBox->setChecked(sets->getReplaceExistingFile());
 }

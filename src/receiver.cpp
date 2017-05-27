@@ -20,6 +20,7 @@
 #include <QJsonDocument>
 #include <QDir>
 
+#include "util.h"
 #include "receiver.h"
 #include "settings.h"
 
@@ -75,24 +76,36 @@ void Receiver::processHeaderPacket(QByteArray& data)
     mFileSize = obj.value("size").toVariant().value<qint64>();
     mInfo->setDataSize(mFileSize);
 
-    QString folderName = Settings::instance()->getDownloadDir() +
-            QDir::separator() + obj.value("folder").toString();
-    QString fileName = folderName +
-            QDir::separator() + obj.value("name").toString();
-    mFile = new QFile(fileName, this);
-    mInfo->setFilePath(fileName);
+    QString fileName = obj.value("name").toString();
+    QString folderName = obj.value("folder").toString();
+    QString dstFolderPath = Settings::instance()->getDownloadDir();
+    if (!folderName.isEmpty())
+        dstFolderPath = dstFolderPath + QDir::separator() + folderName;
 
-    QDir dir(folderName);
+    /*
+     * Jika folder didalam Download Dir tidak ada maka buat folder tsb.
+     */
+    QDir dir(dstFolderPath);
     if (!dir.exists()) {
-        dir.mkpath(folderName);
+        dir.mkpath(dstFolderPath);
     }
 
+    QString dstFilePath = dstFolderPath + QDir::separator() + fileName;
+    /*
+     * Jika opsi overwrite tdk dicentang maka rename file agar tdk tertindih
+     */
+    if (!Settings::instance()->getReplaceExistingFile()) {
+        dstFilePath = Util::getCheckedFilePath(fileName, dstFolderPath);
+    }
+
+    mInfo->setFilePath(dstFilePath);
+    mFile = new QFile(dstFilePath, this);
     if (mFile->open(QIODevice::WriteOnly)) {
         mInfo->setState(TransferState::Transfering);
         emit mInfo->fileOpened();
     }
     else {
-        emit mInfo->errorOcurred(tr("Failed to create ") + fileName);
+        emit mInfo->errorOcurred(tr("Failed to write ") + dstFilePath);
     }
 }
 
