@@ -41,6 +41,8 @@ public:
         getRelativeDirNameAndFullFilePath(const QDir& startingDir, const QString& innerDirName);
 
     static QString parseAppVersion(bool onlyVerNum = true);
+
+    static QString getCheckedFilePath(const QString& fileName, const QString& folderPath);
 };
 
 #endif // UTIL_H

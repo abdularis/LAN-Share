@@ -231,14 +231,17 @@
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="title">
           <string>Behavior</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QCheckBox" name="checkBox">
+           <widget class="QCheckBox" name="overwriteCheckBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>Overwrite existing file</string>
             </property>
@@ -248,6 +251,9 @@
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
              <widget class="QLabel" name="label_10">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Max. Current Transfers:</string>
               </property>
@@ -255,6 +261,9 @@
             </item>
             <item>
              <widget class="QSpinBox" name="spinBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="minimum">
                <number>1</number>
               </property>
@@ -372,7 +381,6 @@
            </layout>
           </item>
          </layout>
-         <zorder></zorder>
          <zorder></zorder>
         </widget>
        </item>

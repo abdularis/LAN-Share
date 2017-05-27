@@ -38,7 +38,7 @@
 #define PROGRAM_NAME         "LANShare"
 #define PROGRAM_DESC         "A simple program that let you transfer files over local area network (LAN) easily."
 #define PROGRAM_X_VER        1
-#define PROGRAM_Y_VER        1
+#define PROGRAM_Y_VER        2
 #define PROGRAM_Z_VER        0
 #define SETTINGS_FILE       "LANSConfig"
 
@@ -57,6 +57,7 @@ public:
     QString getDeviceId() const;
     QString getDeviceName() const;
     QHostAddress getDeviceAddress() const;
+    bool getReplaceExistingFile() const;
     
     void setDeviceName(const QString& name);
     void setBroadcastPort(quint16 port);
@@ -64,6 +65,7 @@ public:
     void setBroadcastInterval(quint16 interval);
     void setFileBufferSize(qint32 size);
     void setDownloadDir(const QString& dir);
+    void setReplaceExistingFile(bool replace);
 
     void saveSettings();
     void reset();
@@ -80,6 +82,7 @@ private:
     quint16 mBCInterval;
     qint32 mFileBuffSize;
     QString mDownloadDir;
+    bool mReplaceExistingFile;
 
     static Settings* obj;
 };

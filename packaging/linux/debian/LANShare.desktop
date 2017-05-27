@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.2.0
+Type=Application
+Name=LANShare
+Categories=System
+GenericName=LAN File Transfer
+Comment=Local Area Network (LAN) File Transfer
+Icon=/usr/share/pixmaps/lanshare-icon.png
+Path=/usr/lib/LANShare
+Exec=/usr/lib/LANShare/LANShare.sh
+StartupNotify=false
+
+Name[en_US]=LANShare.d.desktop
