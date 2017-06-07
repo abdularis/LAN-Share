@@ -23,8 +23,13 @@
 #include <QTimer>
 #include <QtNetwork>
 
-#include "device.h"
+#include "model/device.h"
 
+/*
+ * DeviceBroadcaster digunakan untuk membroadcast Device,
+ * dengan mengirim packet data berisi informasi Device menggunakan
+ * protokol UDP
+ */
 class DeviceBroadcaster : public QObject
 {
     Q_OBJECT

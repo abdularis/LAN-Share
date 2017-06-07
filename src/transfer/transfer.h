@@ -23,8 +23,8 @@
 #include <QTcpSocket>
 #include <QObject>
 
-#include "device.h"
-#include "transferinfo.h"
+#include "model/device.h"
+#include "model/transferinfo.h"
 
 
 enum class PacketType : char

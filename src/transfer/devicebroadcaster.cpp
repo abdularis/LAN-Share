@@ -52,6 +52,9 @@ void DeviceBroadcaster::sendBroadcast()
     }
 }
 
+/*
+ * proses broadcast yang diterima dari Device lain di jaringan
+ */
 void DeviceBroadcaster::processBroadcast()
 {
     while (mUdpSock.hasPendingDatagrams()) {

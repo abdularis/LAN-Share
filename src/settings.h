@@ -22,7 +22,7 @@
 #include <QHostAddress>
 #include <QString>
 
-#include "device.h"
+#include "model/device.h"
 
 
 #if defined (Q_OS_WIN)

@@ -27,6 +27,7 @@
 Receiver::Receiver(Device sender, QTcpSocket* socket, QObject* parent)
     : Transfer(socket, parent), mSenderDev(sender), mFileSize(0), mBytesRead(0), mCancelled(false)
 {
+    mInfo->setState(TransferState::Waiting);
     connect(mSocket, &QTcpSocket::disconnected, this, &Receiver::onDisconnected);
 
     mInfo->setTransferType(TransferType::Download);
@@ -95,7 +96,7 @@ void Receiver::processHeaderPacket(QByteArray& data)
      * Jika opsi overwrite tdk dicentang maka rename file agar tdk tertindih
      */
     if (!Settings::instance()->getReplaceExistingFile()) {
-        dstFilePath = Util::getCheckedFilePath(fileName, dstFolderPath);
+        dstFilePath = Util::getUniqueFileName(fileName, dstFolderPath);
     }
 
     mInfo->setFilePath(dstFilePath);

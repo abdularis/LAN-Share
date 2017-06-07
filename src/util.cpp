@@ -47,7 +47,7 @@ QString Util::sizeToString(qint64 size)
 }
 
 QVector< QPair<QString, QString> >
-    Util::getRelativeDirNameAndFullFilePath(const QDir& startingDir, const QString& innerDirName)
+    Util::getInnerDirNameAndFullFilePath(const QDir& startingDir, const QString& innerDirName)
 {
     QVector< QPair<QString, QString> > pairs;
 
@@ -64,7 +64,7 @@ QVector< QPair<QString, QString> >
             newInnerDirName = innerDirName + QDir::separator() + fi.fileName();
 
         QVector< QPair<QString, QString> > otherPairs =
-                getRelativeDirNameAndFullFilePath( QDir(fi.filePath()), newInnerDirName );
+                getInnerDirNameAndFullFilePath( QDir(fi.filePath()), newInnerDirName );
 
         pairs.append(otherPairs);
     }
@@ -92,7 +92,7 @@ QString Util::parseAppVersion(bool onlyVerNum)
  * maka cek lagi untuk "fileName (1)" jika masih ada chek lagi untuk "fileName (2)" dst.
  * kemudian return file path untuk nama file yang belum ada.
  */
-QString Util::getCheckedFilePath(const QString& fileName, const QString& folderPath)
+QString Util::getUniqueFileName(const QString& fileName, const QString& folderPath)
 {
     int count = 1;
     QString originalFilePath = folderPath + QDir::separator() + fileName;

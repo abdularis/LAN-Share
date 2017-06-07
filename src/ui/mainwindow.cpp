@@ -35,8 +35,8 @@
 #include "settings.h"
 #include "aboutdialog.h"
 #include "util.h"
-#include "sender.h"
-#include "receiver.h"
+#include "transfer/sender.h"
+#include "transfer/receiver.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -245,7 +245,7 @@ void MainWindow::onSendFolderActionTriggered()
 
         QDir dir(dirName);
         QVector< QPair<QString, QString> > ps =
-                Util::getRelativeDirNameAndFullFilePath(dir, dir.dirName());
+                Util::getInnerDirNameAndFullFilePath(dir, dir.dirName());
         pairs.append(ps);
     }
 

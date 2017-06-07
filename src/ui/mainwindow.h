@@ -22,10 +22,10 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 
-#include "transfertablemodel.h"
-#include "devicelistmodel.h"
-#include "devicebroadcaster.h"
-#include "transferserver.h"
+#include "model/transfertablemodel.h"
+#include "model/devicelistmodel.h"
+#include "transfer/devicebroadcaster.h"
+#include "transfer/transferserver.h"
 
 namespace Ui {
 class MainWindow;

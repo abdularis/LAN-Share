@@ -21,8 +21,8 @@
 #include "receiverselectordialog.h"
 #include "ui_receiverselectordialog.h"
 
-#include "devicelistmodel.h"
-#include "device.h"
+#include "model/devicelistmodel.h"
+#include "model/device.h"
 
 ReceiverSelectorDialog::ReceiverSelectorDialog(DeviceListModel* model, QWidget *parent) :
     QDialog(parent),
