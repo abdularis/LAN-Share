@@ -14,7 +14,7 @@
    <string>Locally</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="res.qrc">
+   <iconset resource="../res.qrc">
     <normaloff>:/img/icon.png</normaloff>:/img/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -43,7 +43,7 @@
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="res.qrc">:/img/up.png</pixmap>
+             <pixmap resource="../res.qrc">:/img/up.png</pixmap>
             </property>
             <property name="scaledContents">
              <bool>false</bool>
@@ -82,7 +82,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="res.qrc">
+             <iconset resource="../res.qrc">
               <normaloff>:/img/resume.png</normaloff>:/img/resume.png</iconset>
             </property>
             <property name="iconSize">
@@ -108,7 +108,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="res.qrc">
+             <iconset resource="../res.qrc">
               <normaloff>:/img/pause.png</normaloff>:/img/pause.png</iconset>
             </property>
             <property name="iconSize">
@@ -134,7 +134,7 @@
              <string>Cancel</string>
             </property>
             <property name="icon">
-             <iconset resource="res.qrc">
+             <iconset resource="../res.qrc">
               <normaloff>:/img/cancel.png</normaloff>:/img/cancel.png</iconset>
             </property>
             <property name="iconSize">
@@ -157,7 +157,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="res.qrc">
+             <iconset resource="../res.qrc">
               <normaloff>:/img/clear.png</normaloff>:/img/clear.png</iconset>
             </property>
             <property name="iconSize">
@@ -213,7 +213,7 @@
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="res.qrc">:/img/down.png</pixmap>
+             <pixmap resource="../res.qrc">:/img/down.png</pixmap>
             </property>
            </widget>
           </item>
@@ -249,7 +249,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="res.qrc">
+             <iconset resource="../res.qrc">
               <normaloff>:/img/resume.png</normaloff>:/img/resume.png</iconset>
             </property>
             <property name="iconSize">
@@ -275,7 +275,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="res.qrc">
+             <iconset resource="../res.qrc">
               <normaloff>:/img/pause.png</normaloff>:/img/pause.png</iconset>
             </property>
             <property name="iconSize">
@@ -301,7 +301,7 @@
              <string>Cancel</string>
             </property>
             <property name="icon">
-             <iconset resource="res.qrc">
+             <iconset resource="../res.qrc">
               <normaloff>:/img/cancel.png</normaloff>:/img/cancel.png</iconset>
             </property>
             <property name="iconSize">
@@ -324,7 +324,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="res.qrc">
+             <iconset resource="../res.qrc">
               <normaloff>:/img/clear.png</normaloff>:/img/clear.png</iconset>
             </property>
             <property name="iconSize">
@@ -403,7 +403,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="res.qrc"/>
+  <include location="../res.qrc"/>
  </resources>
  <connections>
   <connection>

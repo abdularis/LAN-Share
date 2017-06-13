@@ -57,4 +57,4 @@ FORMS    += ui/mainwindow.ui \
     ui/settingsdialog.ui
 
 RESOURCES += \
-    res.qrc
+	res.qrc
