@@ -24,7 +24,7 @@
 #include <QAbstractTableModel>
 #include <QColor>
 
-#include "transfer.h"
+#include "transfer/transfer.h"
 #include "transferinfo.h"
 
 class TransferTableModel : public QAbstractTableModel

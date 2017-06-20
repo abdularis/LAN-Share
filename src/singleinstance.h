@@ -23,6 +23,10 @@
 #include <QObject>
 #include <QtNetwork/QLocalServer>
 
+/*
+ * SingleInstance, digunakan agar aplikasi hanya memiliki satu instance
+ * yang berjalan disistem operasi
+ */
 class SingleInstance : public QObject
 {
     Q_OBJECT

@@ -15,46 +15,46 @@ CONFIG += c++11
 RC_ICONS += img/icon.ico
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    device.cpp \
-    devicebroadcaster.cpp \
-    devicelistmodel.cpp \
-    receiver.cpp \
-    sender.cpp \
     settings.cpp \
-    transfer.cpp \
-    transferserver.cpp \
-    receiverselectordialog.cpp \
-    aboutdialog.cpp \
-    settingsdialog.cpp \
     util.cpp \
-    transferinfo.cpp \
-#    transfermanager.cpp \
-    transfertablemodel.cpp \
-    singleinstance.cpp
+	singleinstance.cpp \
+    ui/mainwindow.cpp \
+    ui/receiverselectordialog.cpp \
+    ui/aboutdialog.cpp \
+    ui/settingsdialog.cpp \
+    transfer/devicebroadcaster.cpp \
+    transfer/receiver.cpp \
+    transfer/sender.cpp \
+    transfer/transfer.cpp \
+    transfer/transferserver.cpp \
+#    transfer/transfermanager.cpp \
+	model/device.cpp \
+	model/devicelistmodel.cpp \
+	model/transferinfo.cpp \
+	model/transfertablemodel.cpp
 
-HEADERS  += mainwindow.h \
-    device.h \
-    devicebroadcaster.h \
-    devicelistmodel.h \
-    receiver.h \
-    sender.h \
-    settings.h \
-    transfer.h \
-    transferserver.h \
-    receiverselectordialog.h \
-    aboutdialog.h \
-    settingsdialog.h \
+HEADERS  += settings.h \
     util.h \
-    transferinfo.h \
-#    transfermanager.h \
-    transfertablemodel.h \
-    singleinstance.h
+	singleinstance.h \
+    ui/mainwindow.h \
+    ui/receiverselectordialog.h \
+    ui/aboutdialog.h \
+    ui/settingsdialog.h \
+    transfer/devicebroadcaster.h \
+    transfer/receiver.h \
+    transfer/sender.h \
+    transfer/transfer.h \
+    transfer/transferserver.h \
+#    transfer/transfermanager.h \
+	model/device.h \
+	model/devicelistmodel.h \
+	model/transferinfo.h \
+	model/transfertablemodel.h
 
-FORMS    += mainwindow.ui \
-    receiverselectordialog.ui \
-    aboutdialog.ui \
-    settingsdialog.ui
+FORMS    += ui/mainwindow.ui \
+    ui/receiverselectordialog.ui \
+    ui/aboutdialog.ui \
+    ui/settingsdialog.ui
 
 RESOURCES += \
-    res.qrc
+	res.qrc

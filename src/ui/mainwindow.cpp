@@ -35,8 +35,8 @@
 #include "settings.h"
 #include "aboutdialog.h"
 #include "util.h"
-#include "sender.h"
-#include "receiver.h"
+#include "transfer/sender.h"
+#include "transfer/receiver.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -218,6 +218,7 @@ void MainWindow::onSendFolderActionTriggered()
 {
     QStringList dirs;
     QFileDialog fDialog(this);
+    fDialog.setOption(QFileDialog::DontUseNativeDialog, true);
     fDialog.setFileMode(QFileDialog::Directory);
     fDialog.setOption(QFileDialog::ShowDirsOnly);
 
@@ -231,7 +232,6 @@ void MainWindow::onSendFolderActionTriggered()
     if (tView)
         tView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    fDialog.setOption(QFileDialog::DontUseNativeDialog, true);
     if (!fDialog.exec()) {
         return;
     }
@@ -245,7 +245,7 @@ void MainWindow::onSendFolderActionTriggered()
 
         QDir dir(dirName);
         QVector< QPair<QString, QString> > ps =
-                Util::getRelativeDirNameAndFullFilePath(dir, dir.dirName());
+                Util::getInnerDirNameAndFullFilePath(dir, dir.dirName());
         pairs.append(ps);
     }
 

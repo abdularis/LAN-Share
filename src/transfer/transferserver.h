@@ -23,7 +23,7 @@
 #include <QObject>
 
 #include "receiver.h"
-#include "devicelistmodel.h"
+#include "model/devicelistmodel.h"
 
 class TransferServer : public QObject
 {

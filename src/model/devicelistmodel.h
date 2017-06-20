@@ -21,7 +21,7 @@
 
 #include <QAbstractListModel>
 
-#include "devicebroadcaster.h"
+#include "transfer/devicebroadcaster.h"
 #include "device.h"
 
 class DeviceListModel : public QAbstractListModel

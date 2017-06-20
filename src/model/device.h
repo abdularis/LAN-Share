@@ -22,6 +22,10 @@
 #include <QtNetwork/QHostAddress>
 #include <QObject>
 
+/*
+ * class Device merepresentasikan Node/Computer yang terhubung ke jaringan/LAN
+ * yang sama dan bisa bertransfer data
+ */
 class Device
 {
 public:

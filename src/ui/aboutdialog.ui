@@ -32,7 +32,7 @@
    <string>About</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="res.qrc">
+   <iconset resource="../res.qrc">
     <normaloff>:/img/about.png</normaloff>:/img/about.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -238,7 +238,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="res.qrc"/>
+  <include location="../res.qrc"/>
  </resources>
  <connections>
   <connection>

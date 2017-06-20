@@ -38,7 +38,6 @@ void TransferServer::onNewConnection()
     if (socket) {
         Device dev = mDevList->device(socket->peerAddress());
         Receiver* rec = new Receiver(dev, socket);
-        rec->getTransferInfo()->setState(TransferState::Waiting);
         mReceivers.push_back(rec);
         emit newReceiverAdded(rec);
     }

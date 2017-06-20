@@ -38,11 +38,11 @@ public:
      * QPair<QString, QString>
      */
     static QVector< QPair<QString, QString> >
-        getRelativeDirNameAndFullFilePath(const QDir& startingDir, const QString& innerDirName);
+        getInnerDirNameAndFullFilePath(const QDir& startingDir, const QString& innerDirName);
 
     static QString parseAppVersion(bool onlyVerNum = true);
 
-    static QString getCheckedFilePath(const QString& fileName, const QString& folderPath);
+    static QString getUniqueFileName(const QString& fileName, const QString& folderPath);
 };
 
 #endif // UTIL_H

@@ -22,7 +22,7 @@
 #include <QHostAddress>
 #include <QString>
 
-#include "device.h"
+#include "model/device.h"
 
 
 #if defined (Q_OS_WIN)
@@ -35,7 +35,7 @@
     #define OS_NAME "Unknown"
 #endif
 
-#define PROGRAM_NAME         "LANShare"
+#define PROGRAM_NAME         "LAN Share"
 #define PROGRAM_DESC         "A simple program that let you transfer files over local area network (LAN) easily."
 #define PROGRAM_X_VER        1
 #define PROGRAM_Y_VER        2

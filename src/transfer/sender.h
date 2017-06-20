@@ -16,42 +16,53 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RECEIVER_H
-#define RECEIVER_H
+#ifndef SENDER_H
+#define SENDER_H
 
 #include "transfer.h"
-#include "device.h"
+#include "model/device.h"
 
-class Receiver : public Transfer
+class Sender : public Transfer
 {
 public:
-    Receiver(Device sender, QTcpSocket* socket, QObject* parent = 0);
-    ~Receiver();
+    Sender(Device receiver, const QString& folderName, const QString& filePath, QObject* parent = 0);
+    ~Sender();
 
-    inline Device getSender() const { return mSenderDev; }
-    inline qint64 getReceivedFileSize() const { return mFileSize; }
-    inline qint64 getBytesWritten() const { return mBytesRead; }
+    bool start();
+
+    Device getReceiver() const { return mReceiverDev; }
 
     void resume() override;
     void pause() override;
     void cancel() override;
 
 private Q_SLOTS:
+    void onBytesWritten(qint64 bytes);
+    void onConnected();
     void onDisconnected();
 
 private:
-    void processHeaderPacket(QByteArray& data) override;
-    void processDataPacket(QByteArray& data) override;
-    void processFinishPacket(QByteArray& data) override;
+    void finish();
+    void sendData();
+    void sendHeader();
+
     void processCancelPacket(QByteArray& data) override;
+    void processPausePacket(QByteArray& data) override;
+    void processResumePacket(QByteArray& data) override;
 
-    Device mSenderDev;
-
+    Device mReceiverDev;
+    QString mFilePath;
+    QString mFolderName;
     qint64 mFileSize;
-    qint64 mBytesRead;
+    qint64 mBytesRemaining;
 
-    //
+    QByteArray mFileBuff;
+    qint32 mFileBuffSize;
+
     bool mCancelled;
+    bool mPaused;
+    bool mPausedByReceiver;
+    bool mIsHeaderSent;
 };
 
-#endif // RECEIVER_H
+#endif // SENDER_H

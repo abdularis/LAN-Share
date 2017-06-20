@@ -20,7 +20,7 @@
 #include <QtDebug>
 
 #include "settings.h"
-#include "mainwindow.h"
+#include "ui/mainwindow.h"
 #include "singleinstance.h"
 #include "util.h"
 
