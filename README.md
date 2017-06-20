@@ -19,3 +19,5 @@ LAN Share adalah aplikasi file transfer pada jaringan lokal atau LAN (Local Area
 ![Screenshot 1](screenshot.png)
 
 ![Screenshot 2](screenshot2.png) 
+
+![Screenshot 3](screenshot3.png) 
