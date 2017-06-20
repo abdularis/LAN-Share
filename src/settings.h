@@ -39,7 +39,7 @@
 #define PROGRAM_DESC         "A simple program that let you transfer files over local area network (LAN) easily."
 #define PROGRAM_X_VER        1
 #define PROGRAM_Y_VER        2
-#define PROGRAM_Z_VER        0
+#define PROGRAM_Z_VER        1
 #define SETTINGS_FILE       "LANSConfig"
 
 class Settings
