@@ -218,6 +218,7 @@ void MainWindow::onSendFolderActionTriggered()
 {
     QStringList dirs;
     QFileDialog fDialog(this);
+    fDialog.setOption(QFileDialog::DontUseNativeDialog, true);
     fDialog.setFileMode(QFileDialog::Directory);
     fDialog.setOption(QFileDialog::ShowDirsOnly);
 
@@ -231,7 +232,6 @@ void MainWindow::onSendFolderActionTriggered()
     if (tView)
         tView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    fDialog.setOption(QFileDialog::DontUseNativeDialog, true);
     if (!fDialog.exec()) {
         return;
     }
