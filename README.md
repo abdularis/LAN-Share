@@ -1,19 +1,19 @@
 ![Icon](src/img/icon.png)
 
 # LAN Share
-LAN Share adalah aplikasi file transfer pada jaringan lokal atau LAN (Local Area Network) berbasis GUI dengan menggunakan framework Qt, yang dapat dengan mudah digunakan untuk mentransfer file/banyak file berukuran besar secara langsung tanpa konfigurasi tambahan.
+LAN Share is a cross platform local area network file transfer application, built using Qt GUI framework. It can be used to transfer a whole folder, one or more files, large or small immediatelly without any additional configuration.
 
 ## Features
-* Kirim satu atau banyak file.
-* Kirim folder.
-* Kirim ke banyak penerima sekaligus.
-* Operasi cancel, pause, resume saat transfer file.
+* Send one or more files
+* Send folder
+* Send to multiple receiver at the same time
+* Cancel, pause and resume operations while transfering
 
-## Penggunaan
-* Komputer yang digunakan harus sudah terhubung ke sebuah jaringan yang sama (wired atau wireless) seperti jaringan peer-to-peer dsb.
-* Jalankan aplikasi ini pada komputer sender/pengirim dan komputer receiver/penerima.
-* Pada komputer sender, pilih *Send* (files atau folder) kemudian -> pilih receiver pada dialog *'Select Receiver'* (tunggu sebentar jika list komputer receiver belum tampil) -> kemudian klik *'Send'*.
-* File akan secara otomatis diterima pada komputer receiver.
+## Usage
+* Computer connected to a local area network (wired or wireless)
+* Run the application in both sender and receiver
+* Send the file/folder by, select *Send* (files or folder) then -> select receiver in the *'Select Receiver'* dialog, finally click *'Send'*
+* File/folder would automatically received by the receiver
 
 
 ![Screenshot 1](screenshot.png)
