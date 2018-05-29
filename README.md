@@ -21,11 +21,10 @@ $ sudo dpkg -i ./lanshare_1.2.1-1_amd64.deb
 * Cancel, pause and resume operations while transfering
 
 ## Usage
-* Computer connected to a local area network (wired or wireless)
+* Computer has to be connected to a local area network (wired or wireless)
 * Run the application in both sender and receiver
 * Send the file/folder by, select *Send* (files or folder) then -> select receiver in the *'Select Receiver'* dialog, finally click *'Send'*
 * File/folder would automatically received by the receiver
-
 
 ![Screenshot 1](screenshot.png)
 
