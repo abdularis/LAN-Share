@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/abdularis/LAN-Share.svg?branch=master)](https://travis-ci.org/abdularis/LAN-Share)
+
 ![Icon](src/img/icon.png)
 
 # LAN Share
