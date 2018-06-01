@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=LANShare
+Categories=Network;
+GenericName=LAN File Transfer
+Comment=Local Area Network (LAN) File Transfer
+Icon=lanshare
+Exec=LANShare
