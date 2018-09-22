@@ -13,12 +13,17 @@ You can download the Ubuntu package or linux AppImage or Windows executable from
 
 download the latest version, for now it's lanshare_1.2.1-1_amd64.deb open a terminal, navigate to directory where the downloaded package is located and type
 
+```
 $ sudo dpkg -i ./lanshare_1.2.1-1_amd64.deb
+```
 
 * Using AppImage (All Linux)
 
 simply download the AppImage and run it on all linux distribution
 
+* For Windows
+
+See the github release page or go to [Softpedia](https://www.softpedia.com/get/Internet/File-Sharing/LAN-Share.shtml)
 
 ## Features
 * Send one or more files
@@ -32,8 +37,13 @@ simply download the AppImage and run it on all linux distribution
 * Send the file/folder by, select *Send* (files or folder) then -> select receiver in the *'Select Receiver'* dialog, finally click *'Send'*
 * File/folder would automatically received by the receiver
 
+## Screenshots
+
 ![Screenshot 1](screenshot.png)
 
-![Screenshot 2](screenshot2.png) 
+![Screenshot 2](screenshot2.png)
 
-![Screenshot 3](screenshot3.png) 
+![Screenshot 3](screenshot3.png)
+
+## License
+GPLv3
