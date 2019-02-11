@@ -59,7 +59,11 @@ void DeviceBroadcaster::processBroadcast()
 {
     while (mUdpSock.hasPendingDatagrams()) {
         QByteArray data;
-        data.resize(mUdpSock.pendingDatagramSize());
+        
+        qint64 datagramSize = mUdpSock.pendingDatagramSize();
+        assert(datagramSize <= std::numeric_limits <int>::max());
+
+        data.resize(static_cast<int>(datagramSize));
         QHostAddress sender;
 
         mUdpSock.readDatagram(data.data(), data.size(), &sender);
