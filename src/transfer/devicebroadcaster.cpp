@@ -73,9 +73,8 @@ void DeviceBroadcaster::processBroadcast()
             if (obj.value("port").toVariant().value<quint16>() ==
                     Settings::instance()->getBroadcastPort()) {
 
-                Device device;
-                device.set(obj.value("id").toString(), obj.value("name").toString(),
-                           obj.value("os").toString(), sender);
+                Device device{obj.value("id").toString(), obj.value("name").toString(),
+                              obj.value("os").toString(), sender};
                 emit broadcastReceived(device);
             }
         }

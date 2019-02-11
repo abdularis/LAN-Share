@@ -25,17 +25,19 @@ DeviceListModel::DeviceListModel(DeviceBroadcaster* deviceBC, QObject* parent)
     : QAbstractListModel(parent)
 {
     mDBC = deviceBC;
-    if (!mDBC)
+    if (!mDBC) {
         mDBC = new DeviceBroadcaster(this);
+    }
 
     connect(mDBC, &DeviceBroadcaster::broadcastReceived, this, &DeviceListModel::onBCReceived);
 }
 
-void DeviceListModel::onBCReceived(const Device& fromDevice)
+void DeviceListModel::onBCReceived(const Device &fromDevice)
 {
     QString id = fromDevice.getId();
-    if (id == Settings::instance()->getMyDevice().getId())
+    if (id == Settings::instance()->getMyDevice().getId()) {
         return;
+    }
 
     bool found = false;
     for(const Device& dev : mDevices) {
@@ -81,12 +83,13 @@ QVariant DeviceListModel::data(const QModelIndex &index, int role) const
         }
         case Qt::DecorationRole : {
             QString os = dev.getOSName();
-            if (os == "Linux")
+            if (os == "Linux") {
                 return QPixmap(":/img/linux.png");
-            else if (os == "Windows")
+            } else if (os == "Windows") {
                 return QPixmap(":/img/windows.png");
-            else if (os == "Mac OSX")
+            } else if (os == "Mac OSX") {
                 return QPixmap(":/img/osx.png");
+            }
         }
         }
 
@@ -110,26 +113,31 @@ void DeviceListModel::refresh()
 
 Device DeviceListModel::device(int index) const
 {
-    if (index < 0 || index >= mDevices.size())
+    if (index < 0 || index >= mDevices.size()) {
         return Device();
+    }
 
     return mDevices.at(index);
 }
 
 Device DeviceListModel::device(const QString &id) const
 {
-    for (Device dev : mDevices)
-        if (dev.getId() == id)
+    for (Device dev : mDevices) {
+        if (dev.getId() == id) {
             return dev;
+        }
+    }
 
     return Device();
 }
 
 Device DeviceListModel::device(const QHostAddress &address) const
 {
-    for (Device dev : mDevices)
-        if (dev.getAddress() == address)
+    for (Device dev : mDevices) {
+        if (dev.getAddress() == address) {
             return dev;
+        }
+    }
 
     return Device();
 }

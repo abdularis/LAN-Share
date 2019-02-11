@@ -42,7 +42,7 @@ public:
     void setDevices(const QVector<Device> &getDevices);
 
 private Q_SLOTS:
-    void onBCReceived(const Device& fromDevice);
+    void onBCReceived(const Device &fromDevice);
 
 private:
     DeviceBroadcaster* mDBC;

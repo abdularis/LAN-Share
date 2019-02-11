@@ -90,28 +90,30 @@ QVariant TransferTableModel::headerData(int section, Qt::Orientation orientation
 
 void TransferTableModel::insertTransfer(Transfer *t)
 {
-    if (t) {
-        beginInsertRows(QModelIndex(), 0, 0);
-        mTransfers.prepend(t);
-        endInsertRows();
-        emit dataChanged(index(1, 0), index(mTransfers.size()-1, (int) Column::Count));
-
-        TransferInfo* info = t->getTransferInfo();
-        connect(info, &TransferInfo::fileOpened, [=]() {
-            int idx = mTransfers.indexOf(info->getOwner());
-            QModelIndex fNameIdx = index(idx, (int) Column::FileName);
-            QModelIndex fSizeIdx = index(idx, (int) Column::FileSize);
-            emit dataChanged(fNameIdx, fSizeIdx);
-        });
-
-        connect(info, &TransferInfo::stateChanged, [=](TransferState state) {
-            Q_UNUSED(state);
-
-            int idx = mTransfers.indexOf(info->getOwner());
-            QModelIndex stateIdx = index(idx, (int) Column::State);
-            emit dataChanged(stateIdx, stateIdx);
-        });
+    if (!t) {
+        return;
     }
+
+    beginInsertRows(QModelIndex(), 0, 0);
+    mTransfers.prepend(t);
+    endInsertRows();
+    emit dataChanged(index(1, 0), index(mTransfers.size()-1, (int) Column::Count));
+
+    TransferInfo* info = t->getTransferInfo();
+    connect(info, &TransferInfo::fileOpened, [=]() {
+        int idx = mTransfers.indexOf(info->getOwner());
+        QModelIndex fNameIdx = index(idx, (int) Column::FileName);
+        QModelIndex fSizeIdx = index(idx, (int) Column::FileSize);
+        emit dataChanged(fNameIdx, fSizeIdx);
+    });
+
+    connect(info, &TransferInfo::stateChanged, [=](TransferState state) {
+        Q_UNUSED(state);
+
+        int idx = mTransfers.indexOf(info->getOwner());
+        QModelIndex stateIdx = index(idx, (int) Column::State);
+        emit dataChanged(stateIdx, stateIdx);
+    });
 }
 
 void TransferTableModel::clearCompleted()
@@ -149,8 +151,9 @@ TransferInfo* TransferTableModel::getTransferInfo(int index) const
 
 void TransferTableModel::removeTransfer(int index)
 {
-    if (index < 0 || index >= mTransfers.size())
+    if (index < 0 || index >= mTransfers.size()) {
         return;
+    }
 
     beginRemoveRows(QModelIndex(), index, index);
     mTransfers.at(index)->deleteLater();
