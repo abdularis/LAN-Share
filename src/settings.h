@@ -35,12 +35,12 @@
     #define OS_NAME "Unknown"
 #endif
 
-#define PROGRAM_NAME         "LAN Share"
-#define PROGRAM_DESC         "A simple program that let you transfer files over local area network (LAN) easily."
-#define PROGRAM_X_VER        1
-#define PROGRAM_Y_VER        2
-#define PROGRAM_Z_VER        1
-#define SETTINGS_FILE       "LANSConfig"
+const QString PROGRAM_NAME{"LAN Share"};
+const QString PROGRAM_DESC{"A simple program that let you transfer files over local area network (LAN) easily."};
+constexpr int PROGRAM_X_VER{1};
+constexpr int PROGRAM_Y_VER{2};
+constexpr int PROGRAM_Z_VER{1};
+const QString SETTINGS_FILE{"LANSConfig"};
 
 class Settings
 {

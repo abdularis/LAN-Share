@@ -680,7 +680,7 @@ void MainWindow::setupSystrayIcon()
     mSystrayMenu->addAction(mQuitAction);
 
     mSystrayIcon = new QSystemTrayIcon(QIcon(":/img/systray-icon.png"), this);
-    mSystrayIcon->setToolTip(tr(PROGRAM_NAME));
+    mSystrayIcon->setToolTip(PROGRAM_NAME);
     mSystrayIcon->setContextMenu(mSystrayMenu);
     mSystrayIcon->show();
 }
