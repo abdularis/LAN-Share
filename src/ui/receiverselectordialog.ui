@@ -94,6 +94,21 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_multicast">
+     <property name="font">
+      <font>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string>Note: it is possible to select multiple receivers for multicast using Ctrl+MouseClick or Ctrl+A</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer">
