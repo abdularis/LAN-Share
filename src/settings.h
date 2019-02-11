@@ -77,12 +77,12 @@ private:
     QString getDefaultDownloadPath();
 
     Device mThisDevice;
-    quint16 mBCPort;
-    quint16 mTransferPort;
-    quint16 mBCInterval;
-    qint32 mFileBuffSize;
+    quint16 mBCPort{0};
+    quint16 mTransferPort{0};
+    quint16 mBCInterval{0};
+    qint32 mFileBuffSize{0};
     QString mDownloadDir;
-    bool mReplaceExistingFile;
+    bool mReplaceExistingFile{false};
 
     static Settings* obj;
 };

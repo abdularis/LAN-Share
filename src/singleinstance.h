@@ -32,8 +32,7 @@ class SingleInstance : public QObject
     Q_OBJECT
 
 public:
-    SingleInstance(const QString& id, QObject* parent = 0);
-    ~SingleInstance();
+    SingleInstance(const QString& id, QObject* parent = nullptr);
 
     QString getLastErrorString() const;
     bool start();

@@ -38,7 +38,7 @@ void DeviceListModel::onBCReceived(const Device& fromDevice)
         return;
 
     bool found = false;
-    for(Device dev : mDevices) {
+    for(const Device& dev : mDevices) {
         if (dev.getId() == id) {
             found = true;
             break;

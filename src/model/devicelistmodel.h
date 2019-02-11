@@ -27,10 +27,10 @@
 class DeviceListModel : public QAbstractListModel
 {
 public:
-    DeviceListModel(DeviceBroadcaster* deviceBC, QObject* parent = 0);
+    DeviceListModel(DeviceBroadcaster* deviceBC, QObject* parent = nullptr);
 
-    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     void refresh();
 

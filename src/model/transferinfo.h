@@ -47,7 +47,7 @@ class TransferInfo : public QObject
     Q_OBJECT
 
 public:
-    explicit TransferInfo(Transfer* owner, QObject *parent = 0);
+    explicit TransferInfo(Transfer* owner, QObject *parent = nullptr);
 
     inline Device getPeer() const { return mPeer; }
     inline int getProgress() const { return mProgress; }

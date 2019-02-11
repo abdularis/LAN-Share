@@ -40,7 +40,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), mForceQuit(false)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setupActions();
@@ -179,7 +179,7 @@ void MainWindow::selectReceiversAndSendTheFiles(QVector<QPair<QString, QString> 
     ReceiverSelectorDialog dialog(mDeviceModel);
     if (dialog.exec() == QDialog::Accepted) {
         QVector<Device> receivers = dialog.getSelectedDevices();
-        for (Device receiver : receivers) {
+        for (const Device& receiver : receivers) {
             if (receiver.isValid()) {
 
                 /*
@@ -187,7 +187,7 @@ void MainWindow::selectReceiversAndSendTheFiles(QVector<QPair<QString, QString> 
                  * Just to make sure.
                  */
                 mBroadcaster->sendBroadcast();
-                for (auto p : dirNameAndFullPath) {
+                for (const auto& p : dirNameAndFullPath) {
                     sendFile(p.first, p.second, receiver);
                 }
 
@@ -208,7 +208,7 @@ void MainWindow::onSendFilesActionTriggered()
         return;
 
     QVector<QPair<QString, QString> > pairs;
-    for (auto fName : fileNames)
+    for (const auto& fName : fileNames)
         pairs.push_back( QPair<QString, QString>("", fName) );
 
     selectReceiversAndSendTheFiles(pairs);
@@ -241,7 +241,7 @@ void MainWindow::onSendFolderActionTriggered()
      */
     QVector< QPair<QString, QString> > pairs;
     dirs = fDialog.selectedFiles();
-    for (auto dirName : dirs) {
+    for (const auto& dirName : dirs) {
 
         QDir dir(dirName);
         QVector< QPair<QString, QString> > ps =
@@ -664,7 +664,7 @@ void MainWindow::setupActions()
 void MainWindow::setupSystrayIcon()
 {
     if (!QSystemTrayIcon::isSystemTrayAvailable()) {
-        mSystrayIcon = NULL;
+        mSystrayIcon = nullptr;
         return;
     }
 
