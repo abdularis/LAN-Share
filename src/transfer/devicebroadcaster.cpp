@@ -19,6 +19,8 @@
 #include "devicebroadcaster.h"
 #include "settings.h"
 
+#include <cassert>
+
 DeviceBroadcaster::DeviceBroadcaster(QObject *parent) : QObject(parent)
 {
     connect(&mTimer, &QTimer::timeout, this, &DeviceBroadcaster::sendBroadcast);
