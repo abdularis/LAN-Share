@@ -26,6 +26,10 @@ SingleInstance::SingleInstance(const QString& name, QObject* parent)
     connect(&mServer, &QLocalServer::newConnection, this, &SingleInstance::onNewConnection);
 }
 
+SingleInstance::~SingleInstance()
+{
+}
+
 QString SingleInstance::getLastErrorString() const
 {
     return mServer.errorString();

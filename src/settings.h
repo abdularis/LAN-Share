@@ -35,12 +35,12 @@
     #define OS_NAME "Unknown"
 #endif
 
-const QString PROGRAM_NAME{"LAN Share"};
-const QString PROGRAM_DESC{"A simple program that let you transfer files over local area network (LAN) easily."};
-constexpr int PROGRAM_X_VER{1};
-constexpr int PROGRAM_Y_VER{2};
-constexpr int PROGRAM_Z_VER{1};
-const QString SETTINGS_FILE{"LANSConfig"};
+#define PROGRAM_NAME         "LAN Share"
+#define PROGRAM_DESC         "A simple program that let you transfer files over local area network (LAN) easily."
+#define PROGRAM_X_VER        1
+#define PROGRAM_Y_VER        2
+#define PROGRAM_Z_VER        1
+#define SETTINGS_FILE       "LANSConfig"
 
 class Settings
 {
@@ -77,12 +77,12 @@ private:
     QString getDefaultDownloadPath();
 
     Device mThisDevice;
-    quint16 mBCPort{0};
-    quint16 mTransferPort{0};
-    quint16 mBCInterval{0};
-    qint32 mFileBuffSize{0};
+    quint16 mBCPort;
+    quint16 mTransferPort;
+    quint16 mBCInterval;
+    qint32 mFileBuffSize;
     QString mDownloadDir;
-    bool mReplaceExistingFile{false};
+    bool mReplaceExistingFile;
 
     static Settings* obj;
 };

@@ -25,7 +25,8 @@
 class Sender : public Transfer
 {
 public:
-    Sender(const Device& receiver, const QString& folderName, const QString& filePath, QObject* parent = nullptr);
+    Sender(Device receiver, const QString& folderName, const QString& filePath, QObject* parent = 0);
+    ~Sender();
 
     bool start();
 

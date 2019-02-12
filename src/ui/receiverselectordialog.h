@@ -33,8 +33,8 @@ class ReceiverSelectorDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ReceiverSelectorDialog(DeviceListModel* model, QWidget *parent = nullptr);
-    ~ReceiverSelectorDialog() override;
+    explicit ReceiverSelectorDialog(DeviceListModel* model, QWidget *parent = 0);
+    ~ReceiverSelectorDialog();
 
     Device getSelectedDevice() const;
     QVector<Device> getSelectedDevices() const;

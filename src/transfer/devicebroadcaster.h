@@ -35,7 +35,7 @@ class DeviceBroadcaster : public QObject
     Q_OBJECT
 
 public:
-    explicit DeviceBroadcaster(QObject *parent = nullptr);
+    explicit DeviceBroadcaster(QObject *parent = 0);
 
 Q_SIGNALS:
     void broadcastReceived(const Device& fromDevice);

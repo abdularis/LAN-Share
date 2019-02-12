@@ -24,8 +24,8 @@
 #include "settings.h"
 #include "sender.h"
 
-Sender::Sender(const Device& receiver, const QString& folderName, const QString& filePath, QObject* parent)
-    : Transfer(nullptr, parent), mReceiverDev(receiver), mFilePath(filePath), mFolderName(folderName)
+Sender::Sender(Device receiver, const QString& folderName, const QString& filePath, QObject* parent)
+    : Transfer(NULL, parent), mReceiverDev(receiver), mFilePath(filePath), mFolderName(folderName)
 {
     mFileSize = -1;
     mBytesRemaining = -1;
@@ -40,6 +40,10 @@ Sender::Sender(const Device& receiver, const QString& folderName, const QString&
 
     mInfo->setTransferType(TransferType::Upload);
     mInfo->setPeer(receiver);
+}
+
+Sender::~Sender()
+{
 }
 
 bool Sender::start()
