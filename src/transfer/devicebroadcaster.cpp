@@ -59,7 +59,11 @@ void DeviceBroadcaster::processBroadcast()
 {
     while (mUdpSock.hasPendingDatagrams()) {
         QByteArray data;
-        data.resize(mUdpSock.pendingDatagramSize());
+        
+        qint64 datagramSize = mUdpSock.pendingDatagramSize();
+        assert(datagramSize <= std::numeric_limits <int>::max());
+
+        data.resize(static_cast<int>(datagramSize));
         QHostAddress sender;
 
         mUdpSock.readDatagram(data.data(), data.size(), &sender);
@@ -69,9 +73,8 @@ void DeviceBroadcaster::processBroadcast()
             if (obj.value("port").toVariant().value<quint16>() ==
                     Settings::instance()->getBroadcastPort()) {
 
-                Device device;
-                device.set(obj.value("id").toString(), obj.value("name").toString(),
-                           obj.value("os").toString(), sender);
+                Device device{obj.value("id").toString(), obj.value("name").toString(),
+                              obj.value("os").toString(), sender};
                 emit broadcastReceived(device);
             }
         }

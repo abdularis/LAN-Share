@@ -59,12 +59,11 @@ QVector<Device> ReceiverSelectorDialog::getSelectedDevices() const
     if (selModel) {
 
         QModelIndexList selected = selModel->selectedIndexes();
-        for (int i = 0; i < selected.size(); i++) {
-            if (selected.at(i).isValid()) {
-                devices.push_back(mModel->device( selected.at(i).row() ));
+        for (auto selectedIndex : selected) {
+            if (selectedIndex.isValid()) {
+                devices.push_back(mModel->device(selectedIndex.row()));
             }
         }
-
     }
 
     return devices;

@@ -42,8 +42,7 @@ class Transfer : public QObject
     Q_OBJECT
 
 public:
-    Transfer(QTcpSocket* socket, QObject* parent = 0);
-    ~Transfer();
+    Transfer(QTcpSocket* socket, QObject* parent = nullptr);
 
     inline QFile* getFile() const { return mFile; }
     inline QTcpSocket* getSocket() const { return mSocket; }
