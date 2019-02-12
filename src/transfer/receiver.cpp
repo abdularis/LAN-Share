@@ -24,14 +24,18 @@
 #include "receiver.h"
 #include "settings.h"
 
-Receiver::Receiver(const Device& sender, QTcpSocket* socket, QObject* parent)
-    : Transfer(socket, parent), mSenderDev(sender), mFileSize(0), mBytesRead(0)
+Receiver::Receiver(Device sender, QTcpSocket* socket, QObject* parent)
+    : Transfer(socket, parent), mSenderDev(sender), mFileSize(0), mBytesRead(0), mCancelled(false)
 {
     mInfo->setState(TransferState::Waiting);
     connect(mSocket, &QTcpSocket::disconnected, this, &Receiver::onDisconnected);
 
     mInfo->setTransferType(TransferType::Download);
     mInfo->setPeer(sender);
+}
+
+Receiver::~Receiver()
+{
 }
 
 void Receiver::resume()

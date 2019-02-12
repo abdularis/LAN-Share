@@ -32,13 +32,13 @@ class TransferTableModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    explicit TransferTableModel(QObject *parent = nullptr);
-    ~TransferTableModel() override;
+    explicit TransferTableModel(QObject *parent = 0);
+    ~TransferTableModel();
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
     void insertTransfer(Transfer* t);
     void clearCompleted();

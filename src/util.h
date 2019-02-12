@@ -27,6 +27,8 @@
 class Util
 {
 public:
+    Util();
+
     static QString sizeToString(qint64 size);
 
     /*

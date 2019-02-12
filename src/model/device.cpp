@@ -18,14 +18,22 @@
 
 #include "device.h"
 
-Device::Device(const QString &id, const QString &name, const QString &osName, const QHostAddress &addr)
-: mId{id}, mName{name}, mOSName{osName}, mAddress{addr}
+Device::Device()
+    : mId(""), mName(""), mOSName(""), mAddress(QHostAddress::Null)
 {
 }
 
 bool Device::isValid() const
 {
-    return (mId != "" && mName != "" && mOSName != "" && mAddress != QHostAddress::Null);
+    return mId != "" && mName != "" && mOSName != "" && mAddress != QHostAddress::Null;
+}
+
+void Device::set(const QString& id, const QString& name, const QString& osName, const QHostAddress& addr)
+{
+    mId = id;
+    mName = name;
+    mOSName = osName;
+    mAddress = addr;
 }
 
 void Device::setId(const QString& id)

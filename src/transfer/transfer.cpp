@@ -19,12 +19,17 @@
 #include "transfer.h"
 
 Transfer::Transfer(QTcpSocket* socket, QObject* parent)
-    : QObject(parent), mFile(nullptr), mSocket(nullptr),
+    : QObject(parent), mFile(NULL),
       mPacketSize(-1)
 {
     mInfo = new TransferInfo(this, this);
     setSocket(socket);
     mHeaderSize = sizeof(PacketType) + sizeof(mPacketSize);
+}
+
+Transfer::~Transfer()
+{
+//    qDebug() << "Transfer() desctructor called";
 }
 
 void Transfer::resume()

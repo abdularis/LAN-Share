@@ -27,10 +27,10 @@
 class DeviceListModel : public QAbstractListModel
 {
 public:
-    DeviceListModel(DeviceBroadcaster* deviceBC, QObject* parent = nullptr);
+    DeviceListModel(DeviceBroadcaster* deviceBC, QObject* parent = 0);
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
     void refresh();
 
@@ -42,7 +42,7 @@ public:
     void setDevices(const QVector<Device> &getDevices);
 
 private Q_SLOTS:
-    void onBCReceived(const Device &fromDevice);
+    void onBCReceived(const Device& fromDevice);
 
 private:
     DeviceBroadcaster* mDBC;

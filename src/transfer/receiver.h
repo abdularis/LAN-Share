@@ -25,7 +25,8 @@
 class Receiver : public Transfer
 {
 public:
-    Receiver(const Device& sender, QTcpSocket* socket, QObject* parent = nullptr);
+    Receiver(Device sender, QTcpSocket* socket, QObject* parent = 0);
+    ~Receiver();
 
     inline Device getSender() const { return mSenderDev; }
     inline qint64 getReceivedFileSize() const { return mFileSize; }
@@ -48,6 +49,9 @@ private:
 
     qint64 mFileSize;
     qint64 mBytesRead;
+
+    //
+    bool mCancelled;
 };
 
 #endif // RECEIVER_H

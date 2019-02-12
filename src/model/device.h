@@ -29,8 +29,7 @@
 class Device
 {
 public:
-    explicit Device() = default;
-    Device(const QString &id, const QString &name, const QString &osName, const QHostAddress &addr);
+    explicit Device();
 
     inline QString getId() const { return mId; }
     inline QString getName() const { return mName; }
@@ -38,6 +37,7 @@ public:
     inline QString getOSName() const { return mOSName; }
     bool isValid() const;
 
+    void set(const QString& id, const QString& name, const QString& osName, const QHostAddress& addr);
     void setId(const QString& id);
     void setName(const QString& name);
     void setAddress(const QHostAddress& address);
@@ -47,10 +47,10 @@ public:
     bool operator!=(const Device& other) const;
 
 private:
-    QString mId{""};
-    QString mName{""};
-    QString mOSName{""};
-    QHostAddress mAddress{QHostAddress::Null};
+    QString mId;
+    QString mName;
+    QString mOSName;
+    QHostAddress mAddress;
 };
 
 #endif // DEVICE_H

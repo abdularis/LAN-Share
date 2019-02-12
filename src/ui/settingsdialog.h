@@ -30,8 +30,8 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent = nullptr);
-    ~SettingsDialog() override;
+    explicit SettingsDialog(QWidget *parent = 0);
+    ~SettingsDialog();
 
 private Q_SLOTS:
     void onCancelClicked();
