@@ -1,6 +1,9 @@
-[![Build Status](https://travis-ci.org/abdularis/LAN-Share.svg?branch=master)](https://travis-ci.org/abdularis/LAN-Share)
+<p align="center">
+    <img src="src/img/icon.png"/>
+</p>
 
-![Icon](src/img/icon.png)
+
+[![Build Status](https://travis-ci.org/abdularis/LAN-Share.svg?branch=master)](https://travis-ci.org/abdularis/LAN-Share)
 
 # LAN Share
 LAN Share is a cross platform local area network file transfer application, built using Qt GUI framework. It can be used to transfer a whole folder, one or more files, large or small immediatelly without any additional configuration.
@@ -11,7 +14,7 @@ You can download the Ubuntu package or linux AppImage or Windows executable from
 
 * Using .deb (Ubuntu/Debian)
 
-download the latest version, for now it's lanshare_1.2.1-1_amd64.deb open a terminal, navigate to directory where the downloaded package is located and type
+download the latest version, for example `lanshare_1.2.1-1_amd64.deb` then open a terminal, navigate to directory where the downloaded package is located and type
 
 ```
 $ sudo dpkg -i ./lanshare_1.2.1-1_amd64.deb
