@@ -36,11 +36,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
 protected:
-    void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent* event) override;
 
 public Q_SLOTS:
     void setMainWindowVisibility(bool visible = true);
@@ -99,7 +99,7 @@ private:
     bool anyActiveSender();
     bool anyActiveReceiver();
 
-    bool mForceQuit;
+    bool mForceQuit{false};
     Ui::MainWindow *ui;
     QSystemTrayIcon* mSystrayIcon;
     QMenu* mSystrayMenu;

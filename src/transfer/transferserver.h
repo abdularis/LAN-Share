@@ -30,7 +30,7 @@ class TransferServer : public QObject
     Q_OBJECT
 
 public:
-    explicit TransferServer(DeviceListModel* devList, QObject *parent = 0);
+    explicit TransferServer(DeviceListModel* devList, QObject *parent = nullptr);
 
     bool listen(const QHostAddress& addr = QHostAddress::Any);
 

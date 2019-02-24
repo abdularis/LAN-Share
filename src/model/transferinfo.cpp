@@ -22,7 +22,7 @@
 TransferInfo::TransferInfo(Transfer* owner, QObject *parent) :
     QObject(parent),
     mState(TransferState::Idle), mLastState(TransferState::Idle),
-    mType(TransferType::None), mProgress(0),
+    mType(TransferType::None), mProgress(0), mDataSize(0),
     mOwner(owner)
 {
 }
@@ -47,7 +47,7 @@ bool TransferInfo::canCancel() const
 
 void TransferInfo::setPeer(Device peer)
 {
-    mPeer = peer;
+    mPeer = std::move(peer);
 }
 
 void TransferInfo::setState(TransferState newState)
@@ -95,6 +95,8 @@ void TransferInfo::setState(TransferState newState)
             }
             break;
         }
+        default:
+            break;
         }
 
         mLastState = tmp;

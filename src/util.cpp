@@ -21,10 +21,6 @@
 #include "util.h"
 #include "settings.h"
 
-Util::Util()
-{
-}
-
 QString Util::sizeToString(qint64 size)
 {
     int count = 0;
@@ -52,11 +48,11 @@ QVector< QPair<QString, QString> >
     QVector< QPair<QString, QString> > pairs;
 
     QFileInfoList fiList = startingDir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files);
-    for (auto fi : fiList)
+    for (const auto& fi : fiList)
         pairs.push_back( QPair<QString, QString>(innerDirName, fi.filePath()) );
 
     fiList = startingDir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs);
-    for (auto fi : fiList) {
+    for (const auto& fi : fiList) {
         QString newInnerDirName;
         if (innerDirName.isEmpty())
             newInnerDirName = fi.fileName();

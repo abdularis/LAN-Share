@@ -59,6 +59,7 @@ QVariant TransferTableModel::data(const QModelIndex &index, int role) const
                 case Column::FileSize : return Util::sizeToString(info->getDataSize());
                 case Column::State : return getStateString(info->getState());
                 case Column::Progress : return info->getProgress();
+                default : break; 
                 }
             }
             else if (role == Qt::ForegroundRole && col == Column::State) {
@@ -80,6 +81,7 @@ QVariant TransferTableModel::headerData(int section, Qt::Orientation orientation
         case Column::FileSize : return tr("Size");
         case Column::State : return tr("Status");
         case Column::Progress : return tr("Progress");
+        default : break; 
         }
     }
 
@@ -88,28 +90,30 @@ QVariant TransferTableModel::headerData(int section, Qt::Orientation orientation
 
 void TransferTableModel::insertTransfer(Transfer *t)
 {
-    if (t) {
-        beginInsertRows(QModelIndex(), 0, 0);
-        mTransfers.prepend(t);
-        endInsertRows();
-        emit dataChanged(index(1, 0), index(mTransfers.size()-1, (int) Column::Count));
-
-        TransferInfo* info = t->getTransferInfo();
-        connect(info, &TransferInfo::fileOpened, [=]() {
-            int idx = mTransfers.indexOf(info->getOwner());
-            QModelIndex fNameIdx = index(idx, (int) Column::FileName);
-            QModelIndex fSizeIdx = index(idx, (int) Column::FileSize);
-            emit dataChanged(fNameIdx, fSizeIdx);
-        });
-
-        connect(info, &TransferInfo::stateChanged, [=](TransferState state) {
-            Q_UNUSED(state);
-
-            int idx = mTransfers.indexOf(info->getOwner());
-            QModelIndex stateIdx = index(idx, (int) Column::State);
-            emit dataChanged(stateIdx, stateIdx);
-        });
+    if (!t) {
+        return;
     }
+
+    beginInsertRows(QModelIndex(), 0, 0);
+    mTransfers.prepend(t);
+    endInsertRows();
+    emit dataChanged(index(1, 0), index(mTransfers.size()-1, (int) Column::Count));
+
+    TransferInfo* info = t->getTransferInfo();
+    connect(info, &TransferInfo::fileOpened, [=]() {
+        int idx = mTransfers.indexOf(info->getOwner());
+        QModelIndex fNameIdx = index(idx, (int) Column::FileName);
+        QModelIndex fSizeIdx = index(idx, (int) Column::FileSize);
+        emit dataChanged(fNameIdx, fSizeIdx);
+    });
+
+    connect(info, &TransferInfo::stateChanged, [=](TransferState state) {
+        Q_UNUSED(state);
+
+        int idx = mTransfers.indexOf(info->getOwner());
+        QModelIndex stateIdx = index(idx, (int) Column::State);
+        emit dataChanged(stateIdx, stateIdx);
+    });
 }
 
 void TransferTableModel::clearCompleted()
@@ -133,8 +137,9 @@ void TransferTableModel::clearCompleted()
 
 Transfer* TransferTableModel::getTransfer(int index) const
 {
-    if (index < 0 || index >= mTransfers.size())
-        return NULL;
+    if (index < 0 || index >= mTransfers.size()) {
+        return nullptr;
+    }
 
     return mTransfers.at(index);
 }
@@ -146,8 +151,9 @@ TransferInfo* TransferTableModel::getTransferInfo(int index) const
 
 void TransferTableModel::removeTransfer(int index)
 {
-    if (index < 0 || index >= mTransfers.size())
+    if (index < 0 || index >= mTransfers.size()) {
         return;
+    }
 
     beginRemoveRows(QModelIndex(), index, index);
     mTransfers.at(index)->deleteLater();
