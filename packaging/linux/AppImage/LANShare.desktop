@@ -4,5 +4,6 @@ Name=LANShare
 Categories=Network;
 GenericName=LAN File Transfer
 Comment=Local Area Network (LAN) File Transfer
+Comment[de]=Dateien im Lokalen Netzwerk (LAN) übertragen
 Icon=lanshare
 Exec=LANShare
