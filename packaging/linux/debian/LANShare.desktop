@@ -6,6 +6,7 @@ Name=LANShare
 Categories=System
 GenericName=LAN File Transfer
 Comment=Local Area Network (LAN) File Transfer
+Comment[de]=Dateien im Lokalen Netzwerk (LAN) übertragen
 Icon=/usr/share/pixmaps/lanshare-icon.png
 Path=/usr/lib/LANShare
 Exec=/usr/lib/LANShare/LANShare.sh
