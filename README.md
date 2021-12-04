@@ -28,6 +28,26 @@ simply download the AppImage and run it on all linux distribution
 
 See the github release page or go to [Softpedia](https://www.softpedia.com/get/Internet/File-Sharing/LAN-Share.shtml)
 
+## Compiling instructions
+To compile LANShare you need to install Qt tools, on Debian you can use:
+```
+$ sudo apt install qt5-qmake qt5-default
+```
+For more information about qmake you can visit this [page](https://doc.qt.io/qt-5/qmake-tutorial.html).
+
+Then you can download the sourcecode with git:
+
+```
+$ git clone https://github.com/abdularis/LAN-Share
+```
+and compile with:
+
+```
+$ cd LAN-Share-1.2.1/src
+$ qmake -o Makefile LANShare.pro
+$ make
+```
+
 ## Features
 * Send one or more files
 * Send folder
