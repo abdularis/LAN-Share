@@ -157,6 +157,13 @@ void Sender::sendData()
 void Sender::sendHeader()
 {
     QString fName = QDir(mFile->fileName()).dirName();
+   
+    if (mReceiverDev.getOSName() == "Windows") {
+        mFolderName.replace("/", "\\");
+    } else {
+        // Linux & macOS
+        mFolderName.replace("\\", "/");
+    }
 
     QJsonObject obj( QJsonObject::fromVariantMap({
                                     {"name", fName},
