@@ -1,4 +1,4 @@
-lanshare-qt6 (1.2.1-1) unstable; urgency=medium
+lanshare-qt6 (1.2.1-1) resolute; urgency=medium
 
   * Ported to Qt6.
   * Added proper Debian packaging (copyright, desktop file, icon).
