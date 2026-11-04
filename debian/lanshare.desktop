@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=LAN Share
+GenericName=LAN File Transfer
+Comment=Transfer files and folders over the local network
+Exec=LANShare
+Icon=lanshare
+Terminal=false
+Categories=Network;FileTransfer;Utility;
+Keywords=lan;file;transfer;share;network;
+StartupNotify=true
