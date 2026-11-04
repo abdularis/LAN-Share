@@ -1,14 +1,22 @@
 Source: lanshare-qt6
 Section: net
 Priority: optional
-Maintainer: Néstor Amigo <tuemail@example.com>
-Build-Depends: debhelper-compat (= 13), cmake, qt6-base-dev, qt6-tools-dev, qt6-l10n-tools
-Standards-Version: 4.6.2
-Homepage: https://github.com/NestorAmigo/LANShare-Qt6
+Maintainer: Néstor A.C. <nestorac@gmail.com>
+Build-Depends: debhelper-compat (= 13), qt6-base-dev, qt6-tools-dev
+Standards-Version: 4.7.0
+Homepage: https://github.com/nestorac/LAN-Share
 Rules-Requires-Root: no
 
 Package: lanshare-qt6
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: LANShare ported to Qt6
- A simple local network file transfer application ported to Qt6.2.
+Description: LAN file transfer application (Qt6)
+ LAN Share is a simple cross-platform application for transferring files
+ and folders over a local area network without any additional configuration.
+ This package provides the Qt6 port of the original LAN-Share project.
+ .
+ Features:
+  - Send one or more files
+  - Send entire folders
+  - Transfer to multiple receivers simultaneously
+  - Pause, resume and cancel transfers
