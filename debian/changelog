@@ -1,7 +1,8 @@
-lanshare-qt6 (1.2.1-0ubuntu1) jammy; urgency=medium
+lanshare-qt6 (1.2.1-1) unstable; urgency=medium
 
-  * Ported to Qt6.2
-  * Updated build system to CMake
-  * Fixed deprecated QRegExp usage
+  * Ported to Qt6.
+  * Added proper Debian packaging (copyright, desktop file, icon).
+  * Fixed build system for Qt6 with qmake.
+  * Updated metadata and maintainer information.
 
- -- Néstor A.C. <nestorac@gmail.com>  Sun, 03 Aug 2025 20:15:00 +0200
+ -- Néstor A.C. <nestorac@gmail.com>  Wed, 04 Nov 2026 22:46:00 +0100
