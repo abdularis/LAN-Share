@@ -1,13 +1,13 @@
 #!/usr/bin/make -f
 
-QMAKE=/usr/lib/qt6/bin/qmake
-PRO_FILE=src/LANShare.pro
-DESTDIR=$(CURDIR)/debian/lanshare-qt6
-BINARY_NAME=LANShare
-BUILD_DIR=build
-
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 export DEB_CXXFLAGS_MAINT_APPEND = -Wall -pedantic
+
+QMAKE = /usr/lib/qt6/bin/qmake
+PRO_FILE = src/LANShare.pro
+BUILD_DIR = build
+DESTDIR = $(CURDIR)/debian/lanshare-qt6
+BINARY_NAME = LANShare
 
 %:
 	dh $@ --buildsystem=qmake --parallel
@@ -20,9 +20,12 @@ override_dh_auto_build:
 	$(MAKE) -C $(BUILD_DIR) -j$(nproc)
 
 override_dh_auto_install:
-	install -D -m755 $(BUILD_DIR)/$(BINARY_NAME) $(DESTDIR)/usr/bin/$(BINARY_NAME)
-	install -D -m644 debian/lanshare.desktop $(DESTDIR)/usr/share/applications/lanshare.desktop
-	install -D -m644 src/img/icon.png $(DESTDIR)/usr/share/icons/hicolor/128x128/apps/lanshare.png
+	install -D -m 755 $(BUILD_DIR)/$(BINARY_NAME) \
+		$(DESTDIR)/usr/bin/$(BINARY_NAME)
+	install -D -m 644 debian/lanshare.desktop \
+		$(DESTDIR)/usr/share/applications/lanshare.desktop
+	install -D -m 644 src/img/icon.png \
+		$(DESTDIR)/usr/share/icons/hicolor/128x128/apps/lanshare.png
 
 override_dh_auto_clean:
 	$(MAKE) -C $(BUILD_DIR) clean || true
