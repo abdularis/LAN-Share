@@ -21,6 +21,8 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	install -D -m755 $(BUILD_DIR)/$(BINARY_NAME) $(DESTDIR)/usr/bin/$(BINARY_NAME)
+	install -D -m644 debian/lanshare.desktop $(DESTDIR)/usr/share/applications/lanshare.desktop
+	install -D -m644 src/img/icon.png $(DESTDIR)/usr/share/icons/hicolor/128x128/apps/lanshare.png
 
 override_dh_auto_clean:
 	$(MAKE) -C $(BUILD_DIR) clean || true
