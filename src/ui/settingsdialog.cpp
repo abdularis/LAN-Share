@@ -56,6 +56,7 @@ void SettingsDialog::onSaveClicked()
     set->setDownloadDir(ui->downDirlineEdit->text());
     set->setBroadcastInterval(ui->bcIntervalSpinBox->value());
     set->setReplaceExistingFile(ui->overwriteCheckBox->isChecked());
+    set->setMaxConcurrentSends(ui->spinBox->value());
 
     set->saveSettings();
 
@@ -93,4 +94,6 @@ void SettingsDialog::assign()
     ui->buffSizeSpinBox->setValue(sets->getFileBufferSize() / 1024);
     ui->bcIntervalSpinBox->setValue(sets->getBroadcastInterval());
     ui->overwriteCheckBox->setChecked(sets->getReplaceExistingFile());
+    ui->spinBox->setValue(sets->getMaxConcurrentSends());
+    ui->spinBox->setEnabled(true);
 }
