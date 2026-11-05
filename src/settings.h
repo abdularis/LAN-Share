@@ -24,7 +24,6 @@
 
 #include "model/device.h"
 
-
 #if defined (Q_OS_WIN)
     #define OS_NAME "Windows"
 #elif defined (Q_OS_OSX)
@@ -52,6 +51,7 @@ public:
     quint16 getBroadcastInterval() const;
     qint32 getFileBufferSize() const;
     QString getDownloadDir() const;
+    int getMaxConcurrentSends() const;
 
     Device getMyDevice() const;
     QString getDeviceId() const;
@@ -66,6 +66,7 @@ public:
     void setFileBufferSize(qint32 size);
     void setDownloadDir(const QString& dir);
     void setReplaceExistingFile(bool replace);
+    void setMaxConcurrentSends(int count);
 
     void saveSettings();
     void reset();
@@ -83,6 +84,7 @@ private:
     qint32 mFileBuffSize{0};
     QString mDownloadDir;
     bool mReplaceExistingFile{false};
+    int mMaxConcurrentSends{2};
 
     static Settings* obj;
 };
