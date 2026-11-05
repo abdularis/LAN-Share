@@ -21,6 +21,8 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
+#include <QQueue>
+#include <QPair>
 
 #include "model/transfertablemodel.h"
 #include "model/devicelistmodel.h"
@@ -86,6 +88,8 @@ private Q_SLOTS:
     void onSelectedSenderStateChanged(TransferState state);
     void onSelectedReceiverStateChanged(TransferState state);
 
+    void onSenderFinished();
+
     void quitApp();
 
 private:
@@ -95,9 +99,12 @@ private:
     void connectSignals();
     void sendFile(const QString& folderName, const QString& fileName, const Device& receiver);
     void selectReceiversAndSendTheFiles(QVector<QPair<QString, QString> > dirNameAndFullPath);
+    void processSendQueue();
 
     bool anyActiveSender();
     bool anyActiveReceiver();
+
+    static constexpr int MAX_CONCURRENT_SENDS = 2;
 
     bool mForceQuit{false};
     Ui::MainWindow *ui;
@@ -110,6 +117,10 @@ private:
 
     DeviceBroadcaster* mBroadcaster;
     TransferServer* mTransServer;
+
+    QQueue<QPair<QString, QString>> mSendQueue;
+    Device mCurrentReceiver;
+    int mActiveSends{0};
 
     QAction* mShowMainWindowAction;
     QAction* mSendFilesAction;
