@@ -4,5 +4,6 @@ lanshare-qt6 (1.2.1-1) resolute; urgency=medium
   * Added proper Debian packaging (copyright, desktop file, icon).
   * Fixed build system for Qt6 with qmake.
   * Updated metadata and maintainer information.
+  * Added configurable limit for concurrent file transfers.
 
  -- Néstor A.C. <nestorac@gmail.com>  Wed, 04 Nov 2026 22:46:00 +0100
