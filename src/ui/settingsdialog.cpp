@@ -17,6 +17,7 @@
 */
 
 #include <QFileDialog>
+#include <QDebug>
 
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
@@ -29,11 +30,16 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Force enable the max concurrent transfers control
-    // (in case the .ui was not regenerated)
-    ui->spinBox->setEnabled(true);
+    // Force enable everything related to max concurrent transfers
+    if (ui->groupBox_3)
+        ui->groupBox_3->setEnabled(true);
     if (ui->label_10)
         ui->label_10->setEnabled(true);
+    ui->spinBox->setEnabled(true);
+    ui->spinBox->setReadOnly(false);
+
+    qDebug() << "spinBox enabled:" << ui->spinBox->isEnabled();
+    qDebug() << "spinBox parent enabled:" << (ui->spinBox->parentWidget() ? ui->spinBox->parentWidget()->isEnabled() : false);
 
     assign();
 }
