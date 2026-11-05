@@ -28,6 +28,13 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
+
+    // Force enable the max concurrent transfers control
+    // (in case the .ui was not regenerated)
+    ui->spinBox->setEnabled(true);
+    if (ui->label_10)
+        ui->label_10->setEnabled(true);
+
     assign();
 }
 
@@ -94,6 +101,8 @@ void SettingsDialog::assign()
     ui->buffSizeSpinBox->setValue(sets->getFileBufferSize() / 1024);
     ui->bcIntervalSpinBox->setValue(sets->getBroadcastInterval());
     ui->overwriteCheckBox->setChecked(sets->getReplaceExistingFile());
+
     ui->spinBox->setValue(sets->getMaxConcurrentSends());
     ui->spinBox->setEnabled(true);
+    ui->spinBox->setReadOnly(false);
 }
