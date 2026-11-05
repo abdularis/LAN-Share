@@ -158,7 +158,8 @@ void MainWindow::sendFile(const QString& folderName, const QString &filePath, co
 
 void MainWindow::processSendQueue()
 {
-    while (mActiveSends < MAX_CONCURRENT_SENDS && !mSendQueue.isEmpty()) {
+    int maxConcurrent = Settings::instance()->getMaxConcurrentSends();
+    while (mActiveSends < maxConcurrent && !mSendQueue.isEmpty()) {
         auto item = mSendQueue.dequeue();
         const QString& folderName = item.first;
         const QString& filePath = item.second;
