@@ -30,6 +30,7 @@
 #define DefaultBroadcastInterval    5000    // 5 secs
 #define DefaultFileBufferSize       98304   // 96 KB
 #define MaxFileBufferSize           1024*1024 // 1 MB
+#define DefaultMaxConcurrentSends   2
 
 Settings* Settings::obj = new Settings;
 Settings::Settings()
@@ -89,6 +90,12 @@ void Settings::setReplaceExistingFile(bool replace)
     mReplaceExistingFile = replace;
 }
 
+void Settings::setMaxConcurrentSends(int count)
+{
+    if (count >= 1 && count <= 20)
+        mMaxConcurrentSends = count;
+}
+
 void Settings::loadSettings()
 {
     QSettings settings(SETTINGS_FILE);
@@ -105,6 +112,9 @@ void Settings::loadSettings()
 
     mBCInterval = settings.value("BroadcastInterval", DefaultBroadcastInterval).value<quint16>();
     mReplaceExistingFile = settings.value("ReplaceExistingFile", false).toBool();
+    mMaxConcurrentSends = settings.value("MaxConcurrentSends", DefaultMaxConcurrentSends).toInt();
+    if (mMaxConcurrentSends < 1 || mMaxConcurrentSends > 20)
+        mMaxConcurrentSends = DefaultMaxConcurrentSends;
 }
 
 QString Settings::getDefaultDownloadPath()
@@ -127,6 +137,7 @@ void Settings::saveSettings()
     settings.setValue("DownloadDir", mDownloadDir);
     settings.setValue("BroadcastInterval", mBCInterval);
     settings.setValue("ReplaceExistingFile", mReplaceExistingFile);
+    settings.setValue("MaxConcurrentSends", mMaxConcurrentSends);
 }
 
 void Settings::reset()
@@ -137,6 +148,8 @@ void Settings::reset()
     mBCInterval = DefaultBroadcastInterval;
     mFileBuffSize = DefaultFileBufferSize;
     mDownloadDir = getDefaultDownloadPath();
+    mReplaceExistingFile = false;
+    mMaxConcurrentSends = DefaultMaxConcurrentSends;
 }
 
 quint16 Settings::getBroadcastPort() const
@@ -164,6 +177,11 @@ QString Settings::getDownloadDir() const
     return mDownloadDir;
 }
 
+int Settings::getMaxConcurrentSends() const
+{
+    return mMaxConcurrentSends;
+}
+
 Device Settings::getMyDevice() const
 {
     return mThisDevice;
@@ -188,4 +206,3 @@ bool Settings::getReplaceExistingFile() const
 {
     return mReplaceExistingFile;
 }
-
