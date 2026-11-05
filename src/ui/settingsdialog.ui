@@ -252,7 +252,7 @@
             <item>
              <widget class="QLabel" name="label_10">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string>Max. Current Transfers:</string>
@@ -262,13 +262,13 @@
             <item>
              <widget class="QSpinBox" name="spinBox">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="minimum">
                <number>1</number>
               </property>
               <property name="maximum">
-               <number>100</number>
+               <number>20</number>
               </property>
              </widget>
             </item>
