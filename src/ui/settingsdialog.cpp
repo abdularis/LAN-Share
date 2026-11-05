@@ -17,8 +17,6 @@
 */
 
 #include <QFileDialog>
-#include <QMessageBox>
-#include <cstdio>
 
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
@@ -29,26 +27,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingsDialog)
 {
-    QMessageBox::information(nullptr, "Debug", "SettingsDialog constructor called");
-
-    fprintf(stderr, "=== SettingsDialog constructor called ===\n");
-    fflush(stderr);
-
     ui->setupUi(this);
-
-    // Force enable everything related to max concurrent transfers
-    if (ui->groupBox_3)
-        ui->groupBox_3->setEnabled(true);
-    if (ui->label_10)
-        ui->label_10->setEnabled(true);
-    ui->spinBox->setEnabled(true);
-    ui->spinBox->setReadOnly(false);
-
-    fprintf(stderr, "spinBox enabled: %d\n", ui->spinBox->isEnabled());
-    fprintf(stderr, "spinBox parent enabled: %d\n",
-            ui->spinBox->parentWidget() ? ui->spinBox->parentWidget()->isEnabled() : 0);
-    fflush(stderr);
-
     assign();
 }
 
@@ -118,5 +97,4 @@ void SettingsDialog::assign()
 
     ui->spinBox->setValue(sets->getMaxConcurrentSends());
     ui->spinBox->setEnabled(true);
-    ui->spinBox->setReadOnly(false);
 }
