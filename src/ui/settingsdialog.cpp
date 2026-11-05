@@ -17,6 +17,7 @@
 */
 
 #include <QFileDialog>
+#include <QMessageBox>
 #include <cstdio>
 
 #include "settingsdialog.h"
@@ -28,6 +29,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingsDialog)
 {
+    QMessageBox::information(nullptr, "Debug", "SettingsDialog constructor called");
+
     fprintf(stderr, "=== SettingsDialog constructor called ===\n");
     fflush(stderr);
 
